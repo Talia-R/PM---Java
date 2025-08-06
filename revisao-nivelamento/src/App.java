@@ -21,6 +21,8 @@ public class App {
                             "2) Maior Número\n" +
                             "3) Armazenar Número\n" +
                             "4) Somar Todos Números Armazenados\n" +
+                            "5) Imprimir quantidades de números pares/impares\n" +
+                            "6) Mostrar valores armazenados\n" +
                             "0) Sair");
             System.out.println("-".repeat(10));
             System.out.println("Digite uma opção: ");
@@ -81,6 +83,16 @@ public class App {
                     break;
                 case 4:
                     System.out.println("A soma dos números armazenados é: " + (somaNumerosArmazenados(todosNumeros)));
+                    break;
+                case 5:
+                    System.out.println(parOuImpar(todosNumeros));
+                    break;
+                case 6:
+                    if(todosNumeros.isEmpty()){
+                        System.out.println("Não há números armazenados");
+                        break;
+                    }
+                    System.out.println(todosNumeros);
                     break;
                 default:
                 if(numero == 0) {
@@ -157,4 +169,22 @@ public class App {
         return soma;
     }
 
+    /**
+     * Reitera sobre cada item de uma lista e compara se o resto desse número em uma divisão por 2 é zero. Se for zero, 
+     * incrementa o valor par e pula para o próximo número da lista. Se não, incrementa o valor impar.
+     * @param lista uma ArrayList contendo valores que podem ter sido salvos previamente
+     * @return retorna uma string informando quantos números pares e impares existem na lista
+     */
+    public static String parOuImpar(ArrayList<Double> lista){
+        int par = 0;
+        int impar = 0;
+        for (double numero : lista){
+            if(numero % 2 == 0){
+                par++;
+                continue;
+            }
+            impar++;
+        }
+        return "Valores par: " + par + " Valores impar: " + impar;
+    }
 }
