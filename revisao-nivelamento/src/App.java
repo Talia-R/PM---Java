@@ -1,7 +1,11 @@
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class App {
+
+    
     public static void main(String[] args) throws Exception {
 
         Scanner escolha = new Scanner(System.in);
@@ -9,7 +13,8 @@ public class App {
         System.out.println(
             "Menu\n" +
               "1) Divisora\n" +
-              "2) Maior Número"
+              "2) Maior Número\n" +
+              "3) Armazenar Número"
             );
         System.out.println("Escolha: ");
         int numero = escolha.nextInt();
@@ -50,6 +55,22 @@ public class App {
                     escolha.nextLine();
                 }
             break;
+            case 3:
+            try{
+                int encerrar = 1;
+                do{
+                System.out.println("Digite apenas um número para armazenamento: ");
+                double digito = escolha.nextDouble();
+                System.out.println("Número: "+ armazenaNumeros(digito) + " armazenado");
+                System.out.println("-".repeat(20));
+                System.out.println("\nDeseja: 1 - Armazenar outro número | 0 - Sair");
+                encerrar = escolha.nextInt();
+                } while(encerrar != 0);
+            } catch (InputMismatchException ime){
+                System.out.println("Erro: Os digitos devem ser numerais");
+                escolha.nextLine();
+            }
+            break;
         }
 
        escolha.close();
@@ -81,6 +102,12 @@ public class App {
         return maiorNumero;
     }
 
+
+    public static ArrayList<Double> armazenaNumeros(double numeroAtual){
+        ArrayList<Double> todosNumeros = new ArrayList<>();
+        todosNumeros.add(numeroAtual);
+        return todosNumeros;
+    }
 
 }
 
