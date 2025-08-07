@@ -29,7 +29,7 @@ public class App {
             break;
             case 2:
             System.out.println("-".repeat(10) + "Desenhar Retângulo" + "-".repeat(10));
-
+            try{
             System.out.println("Digite a largura");
             int largura = escolha.nextInt();
 
@@ -40,12 +40,16 @@ public class App {
             int deslocamento = escolha.nextInt();
 
             int linhasCompletas = 2;
-
             preencherLinhasCompletas(largura, deslocamento);
             preencherLinhasVazias(altura, largura, linhasCompletas, deslocamento);
             preencherLinhasCompletas(largura, deslocamento);
+            } catch (InputMismatchException ime){
+                System.out.println("Todos os valores devem ser numerais");
+            }
+
 
             break;
+            
         }
     }
 
