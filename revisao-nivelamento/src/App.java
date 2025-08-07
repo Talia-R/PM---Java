@@ -8,11 +8,55 @@ public class App {
     static ArrayList<Double> todosNumeros = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
+        Scanner escolha = new Scanner(System.in);
 
+        System.out.println("Escolha o exercicio: \n" +
+                            "1) Menu de Interações Númericas\n" +
+                            "2) Desenhar Retângulo\n" +
+                            "3) Avaliação do Professor\n" +
+                            "4) Criptografar String\n" +
+                            "5) Validar Data\n");
+                            //6) Ideia: colocar assim: vc deseja inserir data ou ler de um arquivo existente?
+        System.out.print("Escolha: ");
+
+        int opcaoEscolhida = escolha.nextInt();
+
+
+        switch(opcaoEscolhida){
+            case 1:
+            System.out.println("-".repeat(10) + "Menu de Interações Númericas" + "-".repeat(10));
+            menuInteracaoNumerica();
+            break;
+            case 2:
+            System.out.println("-".repeat(10) + "Desenhar Retângulo" + "-".repeat(10));
+
+            System.out.println("Digite a largura");
+            int largura = escolha.nextInt();
+
+            System.out.println("Digite a altura");
+            int altura = escolha.nextInt();
+
+            System.out.println("Digite o deslocamento");
+            int deslocamento = escolha.nextInt();
+
+            int linhasCompletas = 2;
+
+            preencherLinhasCompletas(largura, deslocamento);
+            preencherLinhasVazias(altura, largura, linhasCompletas, deslocamento);
+            preencherLinhasCompletas(largura, deslocamento);
+
+            break;
+        }
+    }
+
+    //#region Funções para o 'Menu de Interações Númericas'
+    /**
+     * Menu para as questões do exercicio 1
+     */
+    public static void menuInteracaoNumerica(){
         Scanner escolha = new Scanner(System.in);
         int numero = 1;
-
-        
+ 
         do {
             System.out.println("-".repeat(10));
             System.out.println(
@@ -187,4 +231,49 @@ public class App {
         }
         return "Valores par: " + par + " Valores impar: " + impar;
     }
+    
+    //#endregion
+
+    //#region Menu para os demais exercícios
+    /**
+     * Imprime na tela um deslocamento e imprime o restante da mesma linha com: X
+     * @param largura inteiro que define o tamanho horizontal do retângulo
+     * @param deslocamento inteiro para definir o espaçamento entre o inicio do retângulo e o lado esquerdo da tela
+     */
+    public static void preencherLinhasCompletas(int largura, int deslocamento){
+        preencherDeslocamento(deslocamento);
+        System.out.println("X".repeat(largura));
+    }
+
+    /**
+     * Faz um loop excluindo as duas linhas completas, imprime o deslocamento escolhido pelo usuário, imprime um X,
+     * imprime o restante da linha com espaços vazios e finaliza imprimindo um X novamente.
+     * @param altura inteiro que define o tamanho (vertical) do retângulo
+     * @param largura inteiro que define o tamanho (horizontal) do retângulo
+     * @param linhasCompletas linhas do topo e do final do retângulos definido pela função: preencherLinhasCompletas
+     * @param deslocamento inteiro para definir o espaçamento entre o inicio do retângulo e o lado esquerdo da tela
+     */
+    public static void preencherLinhasVazias(int altura, int largura, int linhasCompletas, int deslocamento){
+        for(int i = 0; i < altura - linhasCompletas; i++){
+            preencherDeslocamento(deslocamento);
+            System.out.print('X');
+            System.out.print(" ".repeat(largura - linhasCompletas));
+            System.out.println('X');
+        }
+    }
+
+    /**
+     * Imprime espaços vazios
+     * @param deslocamento inteiro para definir o espaçamento entre o inicio do retângulo e o lado esquerdo da tela
+     */
+    public static void preencherDeslocamento(int deslocamento){
+        System.out.print(" ".repeat(deslocamento));
+    }
+
+
+    //#endregion
+
+
 }
+
+
