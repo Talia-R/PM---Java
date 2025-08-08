@@ -4,9 +4,6 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class App {
-
-    static ArrayList<Double> todosNumeros = new ArrayList<>();
-
     public static void main(String[] args) throws Exception {
         Scanner entrada = new Scanner(System.in);
 
@@ -77,7 +74,6 @@ public class App {
             System.out.print(calcularNotaFinal(todasNotasExercicios.getLast(),todasNotasProvas.getLast(), notaTrabalho));
             } catch (InputMismatchException ime){
                 System.out.println("Todos os valores devem ser numerais");
-
             }
             break;
         }
@@ -89,6 +85,8 @@ public class App {
      * Menu para as questões do exercicio 1
      */
     public static void menuInteracaoNumerica(){
+        ArrayList<Double> todosNumeros = new ArrayList<>();
+
         Scanner escolha = new Scanner(System.in);
         int numero = 1;
  
