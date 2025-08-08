@@ -81,6 +81,7 @@ public class App {
             }
             break;
         }
+        entrada.close();
     }
 
     //#region Funções para o 'Menu de Interações Númericas'
