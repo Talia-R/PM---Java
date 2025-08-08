@@ -8,7 +8,7 @@ public class App {
     static ArrayList<Double> todosNumeros = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
-        Scanner escolha = new Scanner(System.in);
+        Scanner entrada = new Scanner(System.in);
 
         System.out.println("Escolha o exercicio: \n" +
                             "1) Menu de Interações Númericas\n" +
@@ -19,7 +19,7 @@ public class App {
                             //6) Ideia: colocar assim: vc deseja inserir data ou ler de um arquivo existente?
         System.out.print("Escolha: ");
 
-        int opcaoEscolhida = escolha.nextInt();
+        int opcaoEscolhida = entrada.nextInt();
 
 
         switch(opcaoEscolhida){
@@ -31,13 +31,13 @@ public class App {
             System.out.println("-".repeat(10) + "Desenhar Retângulo" + "-".repeat(10));
             try{
             System.out.println("Digite a largura");
-            int largura = escolha.nextInt();
+            int largura = entrada.nextInt();
 
             System.out.println("Digite a altura");
-            int altura = escolha.nextInt();
+            int altura = entrada.nextInt();
 
             System.out.println("Digite o deslocamento");
-            int deslocamento = escolha.nextInt();
+            int deslocamento = entrada.nextInt();
 
             int linhasCompletas = 2;
             preencherLinhasCompletas(largura, deslocamento);
@@ -46,10 +46,40 @@ public class App {
             } catch (InputMismatchException ime){
                 System.out.println("Todos os valores devem ser numerais");
             }
-
-
             break;
+            case 3:
+            try{
+            System.out.println("-".repeat(10) + "Avaliação Professor" + "-".repeat(10));
+            ArrayList<Double> todasNotasExercicios = new ArrayList<>();
+            ArrayList<Double> todasNotasProvas = new ArrayList<>();
+
+            System.out.println("Insira as notas do aluno: ");
+
+            for(int i = 0; i < 4; i++){
+                System.out.print("Nota exercício " + (i + 1) + ": ");
+                double notaAtual = entrada.nextDouble();
+                todasNotasExercicios.add(notaAtual);
+            }
             
+            todasNotasExercicios.add(somarNotas(todasNotasExercicios));
+
+            for(int i = 0; i < 2; i++){
+                System.out.print("Nota prova " + (i + 1) + ": ");
+                double notaAtual = entrada.nextDouble();
+                todasNotasProvas.add(notaAtual);
+            }
+
+            todasNotasProvas.add(somarNotas(todasNotasProvas));
+
+            System.out.print("Nota trabalho: ");
+            double notaTrabalho = entrada.nextDouble();
+
+            System.out.print(calcularNotaFinal(todasNotasExercicios.getLast(),todasNotasProvas.getLast(), notaTrabalho));
+            } catch (InputMismatchException ime){
+                System.out.println("Todos os valores devem ser numerais");
+
+            }
+            break;
         }
     }
 
@@ -81,12 +111,16 @@ public class App {
                     try {
                         double primeiroDigito = 0;
                         double segundoDigito = 0;
+
                         System.out.println("Digite o primeiro valor: ");
                         primeiroDigito = escolha.nextDouble();
+
                         System.out.println("Digite o segundo valor: ");
                         segundoDigito = escolha.nextDouble();
+
                         System.out.println(
                                 primeiroDigito + "/" + segundoDigito + " = " + divisora(primeiroDigito, segundoDigito));
+
                     } catch (InputMismatchException ime) {
                         System.out.println("Erro: ambos os digitos devem ser numerais");
                         escolha.nextLine();
@@ -100,14 +134,19 @@ public class App {
                         double primeiroDigito = 0;
                         double segundoDigito = 0;
                         double terceiroDigito = 0;
+
                         System.out.println("Digite o primeiro valor: ");
                         primeiroDigito = escolha.nextDouble();
+
                         System.out.println("Digite o segundo valor: ");
                         segundoDigito = escolha.nextDouble();
+
                         System.out.println("Digite o terceiro valor: ");
                         terceiroDigito = escolha.nextDouble();
+
                         System.out.println(
                                 "O maior valor é: " + maiorNumero(primeiroDigito, segundoDigito, terceiroDigito));
+
                     } catch (InputMismatchException ime) {
                         System.out.println("Erro: ambos os digitos devem ser numerais");
                         escolha.nextLine();
@@ -239,6 +278,8 @@ public class App {
     //#endregion
 
     //#region Menu para os demais exercícios
+
+    //#region Desenhar Retângulo
     /**
      * Imprime na tela um deslocamento e imprime o restante da mesma linha com: X
      * @param largura inteiro que define o tamanho horizontal do retângulo
@@ -273,8 +314,37 @@ public class App {
     public static void preencherDeslocamento(int deslocamento){
         System.out.print(" ".repeat(deslocamento));
     }
+    //#endregion
 
+    //#region Avaliação Professor
+    /**
+     * Recebe uma ArrayList com notas e faz uma reiteração somando o valor de cada nota e adiciona a variável pontuação
+     * @param listaNotas ArrayList com notas
+     * @return a soma de todas as notas da lista
+     */
+    public static double somarNotas(ArrayList<Double> listaNotas){
+        double pontuacao = 0;
 
+        for (double nota : listaNotas){
+            pontuacao += nota;
+        }
+        return pontuacao;
+    }
+
+    /**
+     * Calcula a média de cada nota pela fórmula: (pontuação/qnt de avaliações) * peso
+     * Soma todas as médias mais a nota do trabalho e formata o resultado final em uma string
+     * @param notaExercicios soma das notas de todos os exercícios
+     * @param notaProvas soma das notas de todas as provas
+     * @param notaTrabalho nota total do trabalho
+     * @return nota formatada em um string com 2 casas decimais
+     */
+    public static String calcularNotaFinal(double notaExercicios, double notaProvas, double notaTrabalho){
+        double notaFinal = ((notaExercicios/4.0) * 0.2) + ((notaProvas/2.0) * 0.6) + notaTrabalho;
+        String notaFormatada = String.format("Nota final: %.2f", notaFinal);
+        return notaFormatada;
+    }
+    
     //#endregion
 
 
