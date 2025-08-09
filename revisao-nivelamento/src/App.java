@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -12,8 +14,9 @@ public class App {
                             "2) Desenhar Retângulo\n" +
                             "3) Avaliação do Professor\n" +
                             "4) Criptografar String\n" +
-                            "5) Validar Data\n");
+                            "5) Validar Data\n" +
                             //6) Ideia: colocar assim: vc deseja inserir data ou ler de um arquivo existente?
+                            "");
         System.out.print("Escolha: ");
 
         int opcaoEscolhida = entrada.nextInt();
@@ -73,6 +76,23 @@ public class App {
 
             System.out.print(calcularNotaFinal(todasNotasExercicios.getLast(),todasNotasProvas.getLast(), notaTrabalho));
             } catch (InputMismatchException ime){
+                System.out.println("Todos os valores devem ser numerais");
+            }
+            break;
+            case 4:
+            // criptografarString();
+            break;
+            case 5:
+            try{
+            String dataValidada = "";
+            do {
+            System.out.println("Insira a data: ");
+            String data = entrada.next();
+            List<Integer> dataFormatada = dividirData(data);
+            dataValidada = validarData(dataFormatada);
+            System.out.println(dataValidada);
+            } while(!dataValidada.equals("Data correta"));
+            } catch (NumberFormatException nfe){
                 System.out.println("Todos os valores devem ser numerais");
             }
             break;
@@ -346,7 +366,86 @@ public class App {
     
     //#endregion
 
+    //#region Criptografar String
 
+    public static void criptografarString(){
+
+        ArrayList<String> listaFora= new ArrayList<>();
+        String frase = "Teste Roxo Azul";
+
+        // System.out.println(frase.split(""));
+
+
+
+
+        // String frase = "mensagem secreta";
+        // ArrayList<String> fraseArrayList = new ArrayList<>();
+
+        // int limiteCaracters = 5;
+
+        // fraseArrayList.add(frase.substring(0,5));
+        // // System.out.println(fraseArrayList);
+
+        // fraseArrayList.add(frase.substring(5,10));
+        // // System.out.println(fraseArrayList);
+
+        // fraseArrayList.add(frase.substring(10,15));
+        // // System.out.println(fraseArrayList);
+
+        // fraseArrayList.add(frase.substring(15));
+        // System.out.println(fraseArrayList);
+
+        // // System.out.print(fraseArrayList.getFirst().substring(0,1));
+        // // System.out.print(fraseArrayList.get(1).substring(0,1));
+
+        // for (String bloco : fraseArrayList){
+        //     System.out.println(Arrays.asList(bloco.split(",")));
+          
+        // }
+
+
+    }
+    //#endregion
+
+    //#region Validar Data
+
+    /**
+     * Recebe como argumento uma string que é dividida em data,mês, ano e convertida para inteiros. Retorna a lista de 
+     * inteiros.
+     * @param data string no formato DD/MM/AAAA
+     * @return lista de datas convertidas em inteiros
+     */
+    public static List<Integer> dividirData(String data){
+        List<String> dataString = Arrays.asList(data.split("/"));
+        List<Integer> dataInt = new ArrayList<>();
+
+        for(String digito : dataString){
+            dataInt.add(Integer.parseInt(digito));
+        }
+        return dataInt;
+    }
+
+    /**
+     * Recebe como argumento uma lista de inteiros (data), onde cada posição está na ordem: data/mês/ano e verifica se
+     * os argumentos são validos
+     * @param data lista de inteiros com data/mes/ano
+     * @return string informando se a data está valida
+     */
+    public static String validarData(List<Integer> data){
+        
+        if(data.get(0) < 1 || data.get(0) > 31){
+            return ("Data incorreta: " + data.get(0));
+
+        } else if(data.get(1) < 1 || data.get(1) > 12) {
+            return ("Mês incorreto: " + data.get(1));
+        } else if(data.get(2) < 1000){
+            return ("Ano incorreto: " + data.get(2));
+        } 
+        
+        return "Data correta";
+    }
+
+    //#endregion
 }
 
 
