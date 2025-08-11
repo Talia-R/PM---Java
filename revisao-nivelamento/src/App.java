@@ -80,6 +80,8 @@ public class App {
             }
             break;
             case 4:
+            String mensagem = "mensagem secreta";
+            printarBlocosString(transformarListaStringEmLista(dividirStringemBlocos(mensagem)));
             // criptografarString();
             break;
             case 5:
@@ -367,43 +369,66 @@ public class App {
     //#endregion
 
     //#region Criptografar String
-
-    public static void criptografarString(){
-
-        ArrayList<String> listaFora= new ArrayList<>();
-        String frase = "Teste Roxo Azul";
-
-        // System.out.println(frase.split(""));
-
-
-
-
-        // String frase = "mensagem secreta";
-        // ArrayList<String> fraseArrayList = new ArrayList<>();
-
-        // int limiteCaracters = 5;
-
-        // fraseArrayList.add(frase.substring(0,5));
-        // // System.out.println(fraseArrayList);
-
-        // fraseArrayList.add(frase.substring(5,10));
-        // // System.out.println(fraseArrayList);
-
-        // fraseArrayList.add(frase.substring(10,15));
-        // // System.out.println(fraseArrayList);
-
-        // fraseArrayList.add(frase.substring(15));
-        // System.out.println(fraseArrayList);
-
-        // // System.out.print(fraseArrayList.getFirst().substring(0,1));
-        // // System.out.print(fraseArrayList.get(1).substring(0,1));
-
-        // for (String bloco : fraseArrayList){
-        //     System.out.println(Arrays.asList(bloco.split(",")));
-          
-        // }
+    
+    /**
+     * Recebe uma string como argumento, a separa em blocos de array de 5 caracters
+     * @param mensagem string "Mensagem Secreta"
+     * @return uma lista da string dividida em blocos (padrão: 5)
+     */
+    public static List<String> dividirStringemBlocos(String mensagem){
+        List<String> stringLista = new ArrayList<>();
+        int tamanhoBlocos = 5;
 
 
+        for(int i = 0; i < mensagem.length(); i += tamanhoBlocos){
+            int ultimoBloco = i + tamanhoBlocos;
+
+            if(ultimoBloco > mensagem.length()){
+                ultimoBloco = mensagem.length();
+            }
+            stringLista.add(mensagem.substring(i, ultimoBloco));
+        }
+
+        return stringLista;
+    }
+    
+    /**
+     * Recebe uma lista como argumento, dentro da lista entra em sublista e quebra seus elementos em blocos de 1 caracter
+     * @param lista lista de strings ["Mensa", "g emS", "ecret", "a"]
+     * @return uma lista de array de string
+     */
+    public static List<String[]> transformarListaStringEmLista(List<String> lista){
+        List<String[]> stringListadeLista = new ArrayList<>();
+        for(String bloco : lista){
+            stringListadeLista.add(bloco.split(""));
+        }
+        return stringListadeLista;
+    }
+
+    /**
+     *  Recebe uma lista de arrays de strings e imprime seus elementos coluna por coluna,
+     * separando cada coluna com '* '
+     * @param listaDeLista lista de arrays de strings, onde cada array representa um bloco de caracteres 
+     * ['m', 'e', 'n','s', 'a']
+     */
+    public static void printarBlocosString(List<String[]> listaDeLista){
+        int tamMaxBloco = 0;
+
+        for (String[] bloco : listaDeLista) {
+            if (bloco.length > tamMaxBloco) {
+                tamMaxBloco = bloco.length;
+            }
+        }
+
+        for (int i = 0; i < tamMaxBloco; i++) {
+        for (int j = 0; j < listaDeLista.size(); j++) {
+            String[] bloco = listaDeLista.get(j);
+            if (i < bloco.length) {
+                System.out.print(bloco[i]);
+            }
+        }
+        System.out.print("* ");
+    }
     }
     //#endregion
 
