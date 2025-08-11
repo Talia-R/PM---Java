@@ -83,22 +83,30 @@ public class App {
             }
             break;
             case 4:
-            try{
-                BufferedReader leitor = new BufferedReader(new FileReader("src\\mensagens.txt"));
-                int quantidadeExecucao = Integer.parseInt(leitor.readLine());
-                for(int i = 0; i < quantidadeExecucao; i++){
-                    String mensagem = leitor.readLine();
-                    printarBlocosString(transformarListaStringEmLista(dividirStringemBlocos(mensagem)));
-                    System.out.println();
+            System.out.println("Deseja: \n 1 - Usar Mensagem Cadastrada\n 2 - Inserir Mensagem");
+            int escolhaUsuario = entrada.nextInt();
+            switch(escolhaUsuario){
+                case 1:
+                try{
+                    BufferedReader leitor = new BufferedReader(new FileReader("src\\mensagens.txt"));
+                    int quantidadeExecucao = Integer.parseInt(leitor.readLine());
+                    for(int i = 0; i < quantidadeExecucao; i++){
+                        String mensagem = leitor.readLine();
+                        printarBlocosString(transformarListaStringEmLista(dividirStringemBlocos(mensagem)));
+                        System.out.println();
+                    }
+                    leitor.close();
+                } catch (IOException ioe){
+                    System.out.println("Erro ao ler arquivo: " + ioe.getMessage());
                 }
-                leitor.close();
-            } catch (IOException ioe){
-                System.out.println("Erro ao ler arquivo: " + ioe.getMessage());
+                break;
+                case 2:
+                // descriptografarMensagem();
+                break;
             }
             break;
-            // System.out.println("Deseja: \n 1 - Usar Mensagem Cadastrada\n 2 - Inserir Mensagem");
-            // int escolhaUsuario = entrada.nextInt();
-            // switch(escolhaUsuario){
+
+
             //     case 1: 
             //     String mensagem = "mensagem secreta";
             //     printarBlocosString(transformarListaStringEmLista(dividirStringemBlocos(mensagem)));
@@ -470,6 +478,49 @@ public class App {
         System.out.print("* ");
     }
     }
+    //#endregion
+
+    //#region Descriptografar String
+
+    // public static void descriptografarMensagem(){
+    //     String fraseCriptografada = "mgea*eec *nmr *s e *ast *";
+    //     List<String> fraseArray = new ArrayList<>();
+    //     List<List<String>> listaDeListaString = new ArrayList<>();
+    //             List<String> letras = new ArrayList<>();
+
+
+
+
+    //     fraseArray = Arrays.asList(fraseCriptografada.split("\\*"));
+
+    //     for(String fraseMenor : fraseArray){
+    //         listaDeListaString.add(Arrays.asList(fraseMenor.split(",")));
+    //     }
+        
+    //     // System.out.println(listaDeListaString);
+    //     // System.out.println(listaDeListaString.size());
+
+    // for(List<String> lista : listaDeListaString){
+    //     for(String conjuntoLetras : lista){
+    //         String[] chars = conjuntoLetras.split("");
+    //         for(String c : chars){
+    //             letras.add(c);
+    //         }
+    //     }
+    // }
+
+    // sout
+    //     // for(int i = 0; i < listaDeListaString.size)
+
+    //     // System.out.println(fraseArray);
+
+    //     // for(int i = 0; i < 5; i ++){
+    //     //     for(int j = 0; j < 5; j++){
+    //     //         System.out.println(fraseArray.get(j));
+    //     //     }
+    //     // }
+    // }
+
     //#endregion
 
     //#region Validar Data
