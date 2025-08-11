@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
@@ -80,25 +83,62 @@ public class App {
             }
             break;
             case 4:
-            String mensagem = "mensagem secreta";
-            printarBlocosString(transformarListaStringEmLista(dividirStringemBlocos(mensagem)));
-            // criptografarString();
+            try{
+                BufferedReader leitor = new BufferedReader(new FileReader("src\\mensagens.txt"));
+                int quantidadeExecucao = Integer.parseInt(leitor.readLine());
+                for(int i = 0; i < quantidadeExecucao; i++){
+                    String mensagem = leitor.readLine();
+                    printarBlocosString(transformarListaStringEmLista(dividirStringemBlocos(mensagem)));
+                    System.out.println();
+                }
+                leitor.close();
+            } catch (IOException ioe){
+                System.out.println("Erro ao ler arquivo: " + ioe.getMessage());
+            }
             break;
+            // System.out.println("Deseja: \n 1 - Usar Mensagem Cadastrada\n 2 - Inserir Mensagem");
+            // int escolhaUsuario = entrada.nextInt();
+            // switch(escolhaUsuario){
+            //     case 1: 
+            //     String mensagem = "mensagem secreta";
+            //     printarBlocosString(transformarListaStringEmLista(dividirStringemBlocos(mensagem)));
+            //     break;
+            //     case 2:
+                
+            //     // System.out.print("Insira sua mensagem: ");
+            //     // entrada.nextLine();
+            //     // String mensagemInserida = entrada.nextLine();
+            //     // System.out.println(mensagemInserida);
+            //     // printarBlocosString(transformarListaStringEmLista(dividirStringemBlocos(mensagemInserida)));
+            //     break;
+            // }
+
             case 5:
             try{
-            String dataValidada = "";
-            do {
-            System.out.println("Insira a data: ");
-            String data = entrada.next();
-            List<Integer> dataFormatada = dividirData(data);
-            dataValidada = validarData(dataFormatada);
-            System.out.println(dataValidada);
-            } while(!dataValidada.equals("Data correta"));
+                BufferedReader leitor = new BufferedReader(new FileReader("src\\datas.txt"));
+                int quantidadeExecucao = Integer.parseInt(leitor.readLine());
+                for(int i = 0; i < quantidadeExecucao; i++){
+                
+                String dataValidada = "";
+
+                String data = leitor.readLine();
+                System.out.println(data);
+
+                List<Integer> dataFormatada = dividirData(data);
+                dataValidada = validarData(dataFormatada);
+                System.out.println(dataValidada);
+                System.out.println("-".repeat(5));
+
+                }   
+                leitor.close();
             } catch (NumberFormatException nfe){
                 System.out.println("Todos os valores devem ser numerais");
+            } catch (IOException ioe){
+                System.out.println("Erro ao ler arquivo: " + ioe.getMessage());
             }
             break;
         }
+        
         entrada.close();
     }
 

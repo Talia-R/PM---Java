@@ -1,0 +1,4 @@
+3
+mensagem secreta
+texto de teste
+java é divertido
