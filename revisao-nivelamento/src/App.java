@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.ArrayList;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -17,13 +16,10 @@ public class App {
                             "2) Desenhar Retângulo\n" +
                             "3) Avaliação do Professor\n" +
                             "4) Criptografar String\n" +
-                            "5) Validar Data\n" +
-                            //6) Ideia: colocar assim: vc deseja inserir data ou ler de um arquivo existente?
-                            "");
+                            "5) Validar Data\n" +                            "");
         System.out.print("Escolha: ");
 
         int opcaoEscolhida = entrada.nextInt();
-
 
         switch(opcaoEscolhida){
             case 1:
@@ -77,13 +73,15 @@ public class App {
             System.out.print("Nota trabalho: ");
             double notaTrabalho = entrada.nextDouble();
 
+            System.out.println("Teste1 " + todasNotasExercicios.getLast() + " " + todasNotasProvas.getLast());
+
             System.out.print(calcularNotaFinal(todasNotasExercicios.getLast(),todasNotasProvas.getLast(), notaTrabalho));
             } catch (InputMismatchException ime){
                 System.out.println("Todos os valores devem ser numerais");
             }
             break;
             case 4:
-            System.out.println("Deseja: \n 1 - Usar Mensagem Cadastrada\n 2 - Inserir Mensagem");
+            System.out.println("Deseja: \n 1 - Criptografar \n 2 - Descriptografar");
             int escolhaUsuario = entrada.nextInt();
             switch(escolhaUsuario){
                 case 1:
@@ -105,22 +103,6 @@ public class App {
                 break;
             }
             break;
-
-
-            //     case 1: 
-            //     String mensagem = "mensagem secreta";
-            //     printarBlocosString(transformarListaStringEmLista(dividirStringemBlocos(mensagem)));
-            //     break;
-            //     case 2:
-                
-            //     // System.out.print("Insira sua mensagem: ");
-            //     // entrada.nextLine();
-            //     // String mensagemInserida = entrada.nextLine();
-            //     // System.out.println(mensagemInserida);
-            //     // printarBlocosString(transformarListaStringEmLista(dividirStringemBlocos(mensagemInserida)));
-            //     break;
-            // }
-
             case 5:
             try{
                 BufferedReader leitor = new BufferedReader(new FileReader("src\\datas.txt"));
@@ -145,8 +127,9 @@ public class App {
                 System.out.println("Erro ao ler arquivo: " + ioe.getMessage());
             }
             break;
+            default:
+            System.out.println("Entrada Inválida");
         }
-        
         entrada.close();
     }
 
@@ -409,7 +392,7 @@ public class App {
      * @return nota formatada em um string com 2 casas decimais
      */
     public static String calcularNotaFinal(double notaExercicios, double notaProvas, double notaTrabalho){
-        double notaFinal = ((notaExercicios/4.0) * 0.2) + ((notaProvas/2.0) * 0.6) + notaTrabalho;
+        double notaFinal = ((notaExercicios * 0.2) + (notaProvas* 0.6) + (notaTrabalho * 0.2));
         String notaFormatada = String.format("Nota final: %.2f", notaFinal);
         return notaFormatada;
     }
@@ -480,49 +463,6 @@ public class App {
     }
     //#endregion
 
-    //#region Descriptografar String
-
-    // public static void descriptografarMensagem(){
-    //     String fraseCriptografada = "mgea*eec *nmr *s e *ast *";
-    //     List<String> fraseArray = new ArrayList<>();
-    //     List<List<String>> listaDeListaString = new ArrayList<>();
-    //             List<String> letras = new ArrayList<>();
-
-
-
-
-    //     fraseArray = Arrays.asList(fraseCriptografada.split("\\*"));
-
-    //     for(String fraseMenor : fraseArray){
-    //         listaDeListaString.add(Arrays.asList(fraseMenor.split(",")));
-    //     }
-        
-    //     // System.out.println(listaDeListaString);
-    //     // System.out.println(listaDeListaString.size());
-
-    // for(List<String> lista : listaDeListaString){
-    //     for(String conjuntoLetras : lista){
-    //         String[] chars = conjuntoLetras.split("");
-    //         for(String c : chars){
-    //             letras.add(c);
-    //         }
-    //     }
-    // }
-
-    // sout
-    //     // for(int i = 0; i < listaDeListaString.size)
-
-    //     // System.out.println(fraseArray);
-
-    //     // for(int i = 0; i < 5; i ++){
-    //     //     for(int j = 0; j < 5; j++){
-    //     //         System.out.println(fraseArray.get(j));
-    //     //     }
-    //     // }
-    // }
-
-    //#endregion
-
     //#region Validar Data
 
     /**
@@ -562,6 +502,12 @@ public class App {
     }
 
     //#endregion
+
+    public static String[] verificarEmail(String[] emails, String dominio){
+        String[] emailsArray = new String[5];
+
+        return emailsArray;
+    }
 }
 
 
