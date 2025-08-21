@@ -6,6 +6,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "teste",
+            "request": "launch",
+            "mainClass": "teste",
+            "projectName": "excs-reforco_1d33c72e"
+        },
+        {
+            "type": "java",
+            "name": "App1",
+            "request": "launch",
+            "mainClass": "App1",
+            "projectName": "excs-reforco_1d33c72e"
+        },
+        {
+            "type": "java",
+            "name": "appTeste",
+            "request": "launch",
+            "mainClass": "appTeste",
+            "projectName": "excs-reforco_1d33c72e"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
