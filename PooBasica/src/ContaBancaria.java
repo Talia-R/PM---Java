@@ -1,4 +1,4 @@
-import java.text.NumberFormat;
+/*import java.text.NumberFormat;
 
 public class ContaBancaria {
     int MIN_Transicao = 1;
@@ -142,3 +142,85 @@ public class ContaBancaria {
     // metodo: darLimiteAoCliente
 
 }
+ */
+
+
+ public class ContaBancaria{
+    private static final int MIN_VALOR_OPERACAO = 1;
+    private static final int MAX_TAM_CPF = 11;
+    private static final int MAX_TAM_NUMERO_CONTA = 5;
+
+    private String cpf;
+    private String numeroConta;
+
+    private double saldoAtual;
+    private double limiteEspecialAtual;
+
+
+    private double limiteEspecialFornecido;
+
+    // public void init(String cpf, String numeroConta, double depositoParaAbertura){
+    //     if(validarCPF() && validarNumeroConta() && depositoParaAbertura >= MIN_VALOR_OPERACAO){
+    //         this.cpf = cpf;
+    //         this.numeroConta = numeroConta;
+    //         saldoAtual = depositoParaAbertura;
+    //     }
+    
+    // }
+
+    public ContaBancaria(String cpf, String numeroConta, double depositoParaAbertura, double limiteFornecido){
+        if((!validarCPF()) && (!validarNumeroConta()) && depositoParaAbertura < MIN_VALOR_OPERACAO){
+            throw new IllegalArgumentException();
+        }
+        this.cpf = cpf;
+        this.numeroConta = numeroConta;
+        this.limiteEspecialFornecido = limiteEspecialAtual =  limiteFornecido;
+        saldoAtual = depositoParaAbertura;
+    }
+
+    /**
+     * Formata e valida se o CPF tem 11 dígitos
+     * @return true caso cpf seja válido e false caso não
+     */
+    public boolean validarCPF(){
+        String cpfFormatado = cpf.trim();
+        return cpfFormatado.length() == MAX_TAM_CPF && cpfFormatado.matches("\\d+");
+    }
+    
+    /**
+     * Formata e valida se o número da conta tem  dígitos
+     * @return true caso conta seja valida e false caso não
+     */
+    public boolean validarNumeroConta(){
+        String numeroContaFormatado = numeroConta.trim();
+        return numeroContaFormatado.length() == MAX_TAM_NUMERO_CONTA && numeroContaFormatado.matches("\\d+");
+    }
+
+    /**
+     * Altera o valor do limite atual se o novo limite não for igual ao anterior e nem negativo
+     * @param novoLimite double não negativo
+     */
+    public void alterarLimiteFornecido(double novoLimite){
+        limiteEspecialFornecido = novoLimite >= 0 && novoLimite != limiteEspecialFornecido ? novoLimite : limiteEspecialFornecido;
+    }
+
+    /**
+     * Calcula o saldo total atual do usuário incluindo o valor na conta mais o limite especial
+     * @return double com o saldo atual
+     */
+    public double calcularSaldoTotal(){
+        return saldoAtual + limiteEspecialAtual;
+    }
+
+    public double sacar(){
+        return calcularSaldoTotal();
+    }
+
+    public double depositar(){
+        return calcularSaldoTotal();
+    }
+
+    
+
+
+ }
