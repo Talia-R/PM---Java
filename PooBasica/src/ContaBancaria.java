@@ -1,144 +1,205 @@
 import java.text.NumberFormat;
 
-public class ContaBancaria {
-    int MIN_Transicao = 1;
-    int caracters_cpf = 11;
-    int caracters_numeroConta = 5;
-    double jurosLimiteEspecial = 0.03;
+public class ContaBancaria{
+    private static final int MIN_VALOR_OPERACAO = 1;
+    private static final double JUROS = 0.03;
+    private static final int MAX_TAM_CPF = 11;
+    private static final int MAX_TAM_NUMERO_CONTA = 5;
 
-    String cpfInserido = new String();
-    String[] cpfFormatado = new String[caracters_cpf];
-    
-    int[] numeroConta = new int[caracters_numeroConta];
+    private String cpf;
+    private String numeroConta;
+    private double limiteEspecialFornecido;
 
-    double limiteEspecialFornecido; // que o banco liberou para o cliente
-    double limiteEspecialDisponivel;
+    private double saldoAtual;
+    private double limiteEspecialAtual;
 
-    double saldoDisponivel; // achoq pd ser um metodo, vai ser atualizado de acordo com oq o cliente retira/poem
-    double saldoTotal;
-
-    public ContaBancaria(String cpfInserido, int[] numeroConta, double valorParaAbrirConta, double limiteEspecialFornecido){
-        cpfFormatado = cpfInserido.split("");
-        if(cpfFormatado.length != caracters_cpf){
-            throw new IllegalArgumentException(String.format("Número de cpf inválido: deve ser equivalente a %i digitos", caracters_cpf));
-        }
-        this.cpfFormatado = cpfInserido.split("");
-        if(numeroConta.length != caracters_numeroConta){
-            throw new IllegalArgumentException(String.format("Número de conta inválido: deve ser equivalente a %i digitos", caracters_numeroConta));
-        }
-        this.numeroConta = numeroConta;
-        if(valorParaAbrirConta < MIN_Transicao){
-            throw new IllegalArgumentException(String.format("Deve depositar, no mínimo, R$%.2f para abrir uma conta", MIN_Transicao));
-        }
-        this.saldoDisponivel = depositar(valorParaAbrirConta);
-        this.limiteEspecialFornecido = this.limiteEspecialDisponivel = limiteEspecialFornecido;
-
-        this.saldoTotal = this.saldoDisponivel + this.limiteEspecialFornecido;
-    }
-
-    public Boolean verificarMinValorInserido(double valor){
-        return valor > MIN_Transicao;
-    }
-
-    public Boolean temSaldoTotalDisponivel(double valor){
-        return saldoTotal() >= valor;
-    }
-
-    public double saldoTotal(){
-        return saldoDisponivel + limiteEspecialDisponivel;
-    }
-
-    // public double darLimiteEspecial(double valor){
-    //     return this.limiteEspecialFornecido += valor;
-    // }
-    // 752 saldoTotal
-    // 502 saldoDisponivel
-    // 250 limite
-    // 700 valorSaque
-    public double sacar(double valor){
-        if(verificarMinValorInserido(valor)){
-            if(temSaldoTotalDisponivel(valor)){
-                if(valor > saldoDisponivel){
-                    double valorFaltante = valor - saldoDisponivel;
-                    // System.out.println(String.format("Desejar utilizar %.2f do seu limite especial?", valorFaltante));
-                    System.out.println(String.format("Utilizou %.2f do seu limite especial", valorFaltante));
-                    saldoDisponivel = 0;
-                    limiteEspecialDisponivel -= valorFaltante;
-                    return Math.abs(saldoTotal() - valor);
-                }
-                saldoDisponivel -= valor;
-                return saldoTotal() - valor;
-            }
-        System.out.println("Saldo insuficiente");
-        return saldoTotal();
-        }
-        return saldoDisponivel;
-        // chamar metodo de verificao de valor inserido, tem que ser > MIN_Transicao
-            //verifica chamar temSaldoTotalDisponivel
-                // sim,   
-                    // se esse valor > saldoDisponivel?
-                        // sim , pgnta pro usuario: quer usar tanto do seu limiteEspecial?
-                            // sim,
-                                // decrementa limiteEspecialDisponivel
-                                // atualiza saldoTotalDisponivel
-                            // nao, termina a operação
-                        // não,
-                            // decrementa do saldoDisponivel
-                            // atualiza saldoTotalDisponivel
-                // nao, saldo insuficiente
-    }
-
-    public double depositar(double valor){
-        if(verificarMinValorInserido(valor)){
-            if(saldoDevedorLimiteEspecial() != 0){            
-                double divida = calcularJurosLimiteEspecial() + Math.abs(saldoDevedorLimiteEspecial());
-                if(valor <= divida){
-                    divida -= valor;
-                    limiteEspecialDisponivel += valor;
-                    saldoDisponivel += valor;  
-                    return saldoTotal += valor;
-                }
-                divida -= valor * (-1);
-                limiteEspecialDisponivel = limiteEspecialFornecido;
-                saldoDisponivel += divida;
-                divida = 0;
-                return saldoTotal += divida;
-                }
-            return saldoTotal += valor;
-        }
-        return saldoTotal;
+    public ContaBancaria(String cpf, String numeroConta, double depositoParaAbertura, double limiteFornecido){
+        if(!validarCPF(cpf))
+            throw new IllegalArgumentException("CPF inválido");
+        if(!validarNumeroConta(numeroConta))
+            throw new IllegalArgumentException("Número da conta inválido");
+        if(depositoParaAbertura < MIN_VALOR_OPERACAO)
+            throw new IllegalArgumentException("Valor mínimo para abertura de conta deve ser superior a R$1.00");
         
-        // chamar metodo de verificao de valor inserido, tem que ser > MIN_Transicao
-            // saldoDevedorLimiteEspecial() != 0
-                // double divida = calcularJurosLimiteEspecial + saldoDevedorLimiteEspecial
-                // valor > divida
-                    // divida -= valor * (-1)
-                    // saldoLimiteEspecialDisponivel = saldoLimiteEspecialFornecido
-                    // saldoDisponivel+= divida;
-                    // saldoTotal += divida;
-                    // double divida = 0;
-                // valor <= divida
-                    // divida -= valor;
-                    // limiteEspecialDisponivel += divida
-                    // saldoDisponivel += divida
-                    // saldoTotal += divida
-            // nao, deposito vai para toda conta
+        this.cpf = cpf;
+        this.numeroConta = numeroConta;
+        this.limiteEspecialFornecido = limiteEspecialAtual =  limiteFornecido;
+        saldoAtual = depositoParaAbertura;
     }
 
-    // temLimiteEspecialDisponivel?
+    //#region setters
+        public void setLimiteEspecialAtual(double valor){
+            this.limiteEspecialAtual = valor;
+        }
 
-    public double saldoDevedorLimiteEspecial(){
-        return limiteEspecialDisponivel < limiteEspecialFornecido ? (limiteEspecialDisponivel - limiteEspecialFornecido) : 0;
+        public void setSaldoAtual(double valor){
+            this.saldoAtual = valor;
+        }
+
+    //#endregion
+
+        //#region getters
+        public double getSaldoAtual(){
+            return saldoAtual;
+        }
+
+
+    //#endregion
+
+    //#region void
+        /**
+         * Altera o valor do limite atual se o novo limite não for igual ao anterior e nem negativo
+         * @param novoLimite double não negativo
+         */
+        public void alterarLimiteFornecido(double novoLimite){
+            limiteEspecialFornecido = novoLimite >= 0 && novoLimite != limiteEspecialFornecido ? novoLimite : limiteEspecialFornecido;
+        }
+    //#endregion
+
+    //#region boolean
+        /**
+         * Formata e valida se o CPF tem 11 dígitos
+         * @return true caso cpf seja válido e false caso não
+         */
+        public boolean validarCPF(String cpf){
+            String cpfFormatado = cpf.trim();
+            return cpfFormatado.length() == MAX_TAM_CPF && cpfFormatado.matches("\\d+");
+        }
+        
+        /**
+         * Formata e valida se o número da conta tem  dígitos
+         * @return true caso conta seja valida e false caso não
+         */
+        public boolean validarNumeroConta(String numeroConta){
+            String numeroContaFormatado = numeroConta.trim();
+            return numeroContaFormatado.length() == MAX_TAM_NUMERO_CONTA && numeroContaFormatado.matches("\\d+");
+        }
+
+        /**
+         * Verifica se o valor inserido é maior ou igual ao valor minimo para operação
+         * @param valor double inserido pelo usuário
+         * @return true se o valor for maior ou igual o mínimo
+         */
+        public boolean verificarValorMinOperacao(double valor){
+            return valor >= MIN_VALOR_OPERACAO;
+        } 
+
+        /**
+         * Verifica se o usuário utilizou o limite especial
+         * @return true se o limite foi usado
+         */
+        public boolean verificarUsoLimiteEspecial(){
+            return limiteEspecialAtual != limiteEspecialFornecido;
+        }
+
+        /**
+         * Verifica se o valor total disponivel na conta é maior que o valor inserido
+         * @param valor double inserido
+         * @return true se o valor total disponivel é maior do que o valor inserido
+         */
+        public boolean temSaldoTotalDisponivel(double valor){
+            return calcularSaldoTotal() >= valor;
+        }
+    //#endregion
+
+    //#region double
+        /**
+         * Calcula o saldo total atual do usuário incluindo o valor na conta mais o limite especial
+         * @return double com o saldo atual
+         */
+        public double calcularSaldoTotal(){
+            return saldoAtual + limiteEspecialAtual;
+        }
+
+        /**
+        * Calcula o valor do juros sobre o limite que foi utilizado. O cálculo é feito em base decimal
+        * @return valor do juros em base decimal. 
+        */ 
+        public double calcularJuros(){
+            double qntUsada = limiteEspecialFornecido - limiteEspecialAtual ;
+            return qntUsada * JUROS;
+        }
+
+        /**
+         * Calcula o saldo devedor atual incluindo o juros.
+         * @return double com o total do saldo devedor mais o juros
+         */
+        public double calcularDividaLimiteEspecial(){
+            return (limiteEspecialFornecido - limiteEspecialAtual) + calcularJuros();
+        }
+
+        /** Sacar um valor: verifica se o valor fornecido é válido para operação e maior que o saldo atual que o cliente tem na conta o saque
+         * é feito sem alterar o valor do limite especial. Se o valor for maior, será feito o uso do saldo da conta juntamente
+         * com o valor do limite especial. Caso o valor seja maior que o saldo suficiente da conta (saldo + limite especial)
+         * retorna -1;
+         * @param valor double valor de saque
+         * @return o valor total da conta casa a operação ocorra e -1 caso falhe
+         */
+        public double sacar(double valor){
+            if(temSaldoTotalDisponivel(valor)){
+                // sacar valor do saldo atual
+                if(saldoAtual >= valor){
+                    saldoAtual -= valor;
+                    return calcularSaldoTotal();
+                }
+                // sacar do limite
+                double faltanteParaSaque = valor - saldoAtual;
+                saldoAtual = 0;
+                limiteEspecialAtual -= faltanteParaSaque;
+                return calcularSaldoTotal();
+            }
+            return -1;
+        }
+
+        /**
+         * Depositar um valor: verifica se o valor fornecido é válido para operação, se houve utilização do Limite Especial
+         * calcula o valor de toda divida incluindo o juros. O valor inserido pode ser suficiente para pagar parte da divida
+         * ou seu valor completo. Se o valor for suficiente ou maior que a divida, o que sobrar (superavitDeposito) vai para
+         * o saldo do cliente.
+         * Caso não haja uso do limite especial, deposita o valor direto no saldo do usuário.
+         * @param valor double inserido para deposito
+         * @return o saldo total que tem na conta do cliente
+         */
+        public double depositar(double valor){
+            if(verificarValorMinOperacao(valor)){
+                // depositar enquanto devendo
+                if(verificarUsoLimiteEspecial()){
+                    double divida = calcularDividaLimiteEspecial();
+                    // pagar parte doq deve
+                    if(valor < divida){
+                        // divida -= valor; acho q n precisa pq só decrementa variavel local
+                        limiteEspecialAtual += valor;
+                        return calcularSaldoTotal();
+                    }
+
+                    // pagar tudo oq deve
+                    double superavitDeposito = valor - divida;
+                    limiteEspecialAtual = limiteEspecialFornecido;
+                    saldoAtual += superavitDeposito;
+                    return calcularSaldoTotal();
+                }
+                // depositar sem dever
+                saldoAtual += valor;
+                return calcularSaldoTotal();
+            }
+            return -1;
+        }
+    //#endregion
+
+    //#region String
+    public String extratoBancario(){
+        NumberFormat moeda = NumberFormat.getCurrencyInstance();
+        return String.format("--- Extrato --- \n" +
+                            "Conta: %s\n" +
+                            "Saldo Disponivel: %s\n" +
+                            "Limite Especial Disponivel: %s\n" +
+                            "Usou %s do valor total do limite especial de: %s",
+                            numeroConta,
+                            moeda.format(saldoAtual), 
+                            moeda.format(limiteEspecialAtual),
+                            moeda.format(calcularDividaLimiteEspecial()),
+                            moeda.format(limiteEspecialFornecido)
+                            );
     }
-
-    public double calcularJurosLimiteEspecial(){
-        return Math.abs(saldoDevedorLimiteEspecial()*jurosLimiteEspecial);
-    }
-
-    public double verificarLimiteEspecial(){
-        return limiteEspecialFornecido - limiteEspecialDisponivel;
-    }
-
-    // metodo: darLimiteAoCliente
-
-}
+    //#endregion
+ }

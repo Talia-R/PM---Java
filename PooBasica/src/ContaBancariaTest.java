@@ -1,40 +1,84 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+public class ContaBancariaTest{
+    private ContaBancaria c1;
 
-public class ContaBancariaTest {
+    @BeforeEach
+    void setup(){
+        c1 = new ContaBancaria("12345678912", "12345", 1, 50);
+    }
+
     // @Test
-    // public void darLimiteEspecialCerto(){
-    //     ContaBancaria c1 = new ContaBancaria("12345678901", new int[]{1,2,3,4,5}, 500.00, 2.00);
-    //     // c1.darLimiteEspecial(250.00);
-    //     assertEquals(250d, c1.limiteEspecialFornecido, 0.01);
-    //     // c1.darLimiteEspecial(50.00);
-    //     assertEquals(300d, c1.limiteEspecialFornecido, 0.01);
+    // public void criarContaCorretamente(){
+    //     c1 = new ContaBancaria("12345678912", "12345", 1, 50);
     // }
 
+    @Test
+    public void verificarUsoLimiteEspecialCorretamente(){
+        c1.setLimiteEspecialAtual(25);
+        assertTrue(c1.verificarUsoLimiteEspecial());
+    }
+
+    @Test
+    public void verificarUsoLimiteEspecialIncorretamente(){
+        assertFalse(c1.verificarUsoLimiteEspecial());
+    }
+
     @Test 
-    public void sacarCerto(){
-        // ContaBancaria c1 = new ContaBancaria("12345678901", new int[]{1,2,3,4,5}, 500d, 2d,250d);
-        // assertEquals(52d, c1.sacar(700d), 0.01);
+    public void calcularDividaLimiteEspecialCorretamente(){
+        c1.setLimiteEspecialAtual(25);
+        assertEquals(25.75, c1.calcularDividaLimiteEspecial(), 0.01);
     }
 
     @Test
-    public void depositarCerto(){
-        ContaBancaria c2 = new ContaBancaria("12345678901", new int[]{1,2,3,4,5}, 100, 50);
-        assertEquals(200d, c2.depositar(50d), 0.01);
+    public void depositarSemTerDividaCorretamente(){
+        c1.depositar(50d);
+        assertEquals(101d, c1.calcularSaldoTotal(), 0.01);
     }
 
     @Test
-    public void depositarQuitandoTodaDivida(){
-        ContaBancaria c2 = new ContaBancaria("12345678901", new int[]{1,2,3,4,5}, 100, 50);
-        c2.sacar(150d);
-        assertEquals(150d, c2.depositar(150d));
+    public void depositarPagandoParteDaDividaCorretamente(){
+        c1.setSaldoAtual(0);
+        c1.setLimiteEspecialAtual(0);
+
+        c1.depositar(50d);
+        assertEquals(50d, c1.calcularSaldoTotal(), 0.01);
     }
 
-    @Test void depositarQuitandoParteDaDivida(){
-        ContaBancaria c2 = new ContaBancaria("12345678901", new int[]{1,2,3,4,5}, 100, 50);
-        c2.sacar(150d);
-        assertEquals(23.5, c2.depositar(25d));
+    @Test
+    public void depositarPagandoTodaDividaCorretamente(){
+        c1.setSaldoAtual(0);
+        c1.setLimiteEspecialAtual(0);
+
+        c1.depositar(51.5d);
+        assertEquals(50d, c1.calcularSaldoTotal(), 0.01);
     }
+
+    @Test
+    public void sacarCorretamente(){
+        c1.setSaldoAtual(50d);
+        c1.sacar(25d);
+        assertEquals(25d,c1.getSaldoAtual(), 0.01);
+    }
+
+    @Test
+    public void sacarUsandoLimiteCorretamente(){
+        c1.setSaldoAtual(50d);
+        c1.sacar(80d);
+        assertEquals(20d,c1.calcularSaldoTotal(), 0.01);
+    }
+
+    @Test
+    public void sacarIncorretamente(){
+        c1.setSaldoAtual(50d);
+        c1.sacar(120d);
+        assertNotEquals(0d, c1.calcularSaldoTotal(), 0.01);
+    }
+
 }
