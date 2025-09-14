@@ -1,3 +1,14 @@
+/*
+ * 🔹 2. Validações
+
+    Modele uma classe CPF:
+
+    Armazena uma string.
+
+    Valida se o CPF tem 11 dígitos numéricos (não precisa validar dígitos verificadores ainda).
+
+    Método toString() deve imprimir no formato XXX.XXX.XXX-XX.
+ */
 public class CPF {
     private String cpf;
 
