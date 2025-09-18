@@ -37,16 +37,12 @@ public class App {
         Pizza novaPizza = new Pizza();
         montarPizza(novaPizza);
         pizzas.add(novaPizza);
-
-        System.out.println(relatorio());
+        System.out.println(notaDeCompra());
         System.out.println(detalheDivisorTraco());
-
     }
-
 
     public static void montarPizza(Pizza pizza){
         System.out.print("Vamos montar sua pizza: ");
-
         int qntAdicionais = InputUtils.lerInt("\nQuantos adicionais gostaria de incluir (máx: " + 
                                                 Pizza.getMaxIngredientesAdicionais() +
                                                 ")?: ");
@@ -54,11 +50,11 @@ public class App {
         pizza.editarPizza(1, qntAdicionais);
     }
 
-    public static String relatorio(){
+    public static String notaDeCompra(){
         StringBuilder s = new StringBuilder();
 
         for(int i = 0; i < pizzas.size(); i++){
-            s.append(String.format("%d) %s", (i+1), pizzas.get(i).relatorio()));
+            s.append(String.format("%d) %s", (i+1), pizzas.get(i).gerarNotaDescritiva()));
 
             if(i >= 1){
                 int precoFinal = 0;

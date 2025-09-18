@@ -2,8 +2,8 @@ import java.text.NumberFormat;
 
 public class Pizza {
     private static final int MAX_INGREDIENTES_ADICIONAIS = 8;
-    private static final int CUSTO_ADICIONAIS = 5;
-    private static int precoBase = 29;
+    private static final double CUSTO_ADICIONAIS = 5d;
+    private static double precoBase = 29d;
     private int qntAdicionaisAtual = 0;
 
     public Pizza(){};
@@ -12,7 +12,7 @@ public class Pizza {
         qntAdicionaisAtual = qntAdicionais;
     }
 
-    public static int getPrecoPadrao(){
+    public static double getPrecoPadrao(){
         return precoBase;
     }
 
@@ -86,10 +86,10 @@ public class Pizza {
     }
 
     /**
-     * Exibe um relatório da pizza com descrição dos ingredientes (caso tenha) e seu preço.
+     * Exibe uma nota descritiva da pizza com descrição dos ingredientes (caso tenha) e seu preço.
      * @return string com a descrição e preço da pizza
      */
-    public String relatorio(){
+    public String gerarNotaDescritiva(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
         StringBuilder s = new StringBuilder();
         s.append("Pizza no valor de: " + moeda.format(getPrecoPadrao()));
