@@ -7,6 +7,13 @@ public class App {
     static LinkedList<Pedido> pedidos = new LinkedList<>();
     static NumberFormat moeda = NumberFormat.getCurrencyInstance();
 
+    /**
+     * Retorna uma string formada pela repetição do divisor informado.
+     * @param divisor o texto que será repetido
+     * @param repeticoes número de vezes que o divisor deve ser repetido
+     * @return uma nova string composta pela repetição do divisor
+     * @throws IllegalArgumentException se repeticoes for negativo
+     */
     public static String detalheDivisor(String divisor, int repeticoes){
         return divisor.repeat(repeticoes);
     }
@@ -19,6 +26,10 @@ public class App {
         return " --- Bem-vindo(a) ao XulambsVeg! ---";
     }
 
+    /**
+     * Exibe o cardápio enumerado
+     * @return cardápio com itens enumerados.
+     */
     public static String cardapio(){
         StringBuilder s = new StringBuilder();
         s.append("Cardápio: ");
@@ -43,6 +54,10 @@ public class App {
         return novaPizza;
     }
 
+    /**
+     * Monta um pizza de acordo com os adicionais passados.
+     * @param pizza pizza a ser alterada de acordo com os adicionais passados
+     */
     public static void montarPizza(Pizza pizza){
         System.out.print("Vamos montar sua pizza: ");
         int qntAdicionais = InputUtils.lerInt("\nQuantos adicionais gostaria de incluir (máx: " + 
@@ -52,6 +67,11 @@ public class App {
         pizza.editarPizza(1, qntAdicionais);
     }
 
+    /**
+     * Exibe a nota de compra (relatorio) de uma pizza
+     * @param pizza a ter a nota exibida
+     * @return nota de compra da pizza
+     */
     public static String notaDeCompra(Pizza pizza){
         StringBuilder s = new StringBuilder();
         System.out.println(pizza.relatorio());
