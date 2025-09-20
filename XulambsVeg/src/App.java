@@ -41,70 +41,76 @@ public class App {
         return s.toString();
     }
 
-    /**
-     * Cria um objeto pizza e o adiciona na lista de Pizzas.
-     * Exibe o relatorio (nota de compra).
-     */
-    public static Pizza comprarPizza(){
-        Pizza novaPizza = new Pizza();
-        montarPizza(novaPizza);
-        // pizzas.add(novaPizza);
-        System.out.println(notaDeCompra(novaPizza));
-        System.out.println(detalheDivisorTraco());
-        return novaPizza;
-    }
+    //#region Pizza
+        /**
+         * Cria um objeto pizza e o adiciona na lista de Pizzas.
+         * Exibe o relatorio (nota de compra).
+         */
+        public static Pizza comprarPizza(){
+            Pizza novaPizza = new Pizza();
+            montarPizza(novaPizza);
+            // pizzas.add(novaPizza);
+            System.out.println(notaDeCompra(novaPizza));
+            System.out.println(detalheDivisorTraco());
+            return novaPizza;
+        }
 
-    /**
-     * Monta um pizza de acordo com os adicionais passados.
-     * @param pizza pizza a ser alterada de acordo com os adicionais passados
-     */
-    public static void montarPizza(Pizza pizza){
-        System.out.print("Vamos montar sua pizza: ");
-        int qntAdicionais = InputUtils.lerInt("\nQuantos adicionais gostaria de incluir (máx: " + 
-                                                Pizza.getMaxIngredientesAdicionais() +
-                                                ")?: ");
+        /**
+         * Monta um pizza de acordo com os adicionais passados.
+         * @param pizza pizza a ser alterada de acordo com os adicionais passados
+         */
+        public static void montarPizza(Pizza pizza){
+            System.out.print("Vamos montar sua pizza: ");
+            int qntAdicionais = InputUtils.lerInt("\nQuantos adicionais gostaria de incluir (máx: " + 
+                                                    Pizza.getMaxIngredientesAdicionais() +
+                                                    ")?: ");
 
-        pizza.editarPizza(1, qntAdicionais);
-    }
+            pizza.editarPizza(1, qntAdicionais);
+        }
 
-    /**
-     * Exibe a nota de compra (relatorio) de uma pizza
-     * @param pizza a ter a nota exibida
-     * @return nota de compra da pizza
-     */
-    public static String notaDeCompra(Pizza pizza){
-        StringBuilder s = new StringBuilder();
-        System.out.println(pizza.relatorio());
-        return s.toString();
-    }
+        /**
+         * Exibe a nota de compra (relatorio) de uma pizza
+         * @param pizza a ter a nota exibida
+         * @return nota de compra da pizza
+         */
+        public static String notaDeCompra(Pizza pizza){
+            StringBuilder s = new StringBuilder();
+            System.out.println(pizza.relatorio());
+            return s.toString();
+        }
+    //#endregion
+
+    //#region Pedido
+
+    //#endregion
 
     public static void main(String[] args) throws Exception {
         System.out.println(cabecalho());
 
         int escolha = -1;
         do{
-        try{
-       
-            System.out.println(cardapio());
-            escolha = InputUtils.lerInt("Opção:  ");
-            switch(escolha){
-                case 1 -> comprarPizza();
-            //    case 3 -> editarPedido();
-                case 0 -> {
-                    System.out.print("Até a próxima! =^.^=");
-                    continue;
+            try{
+                System.out.println(cardapio());
+                escolha = InputUtils.lerInt("Opção:  ");
+                switch(escolha){
+                    case 1 -> comprarPizza();
+                //    case 3 -> editarPedido();
+                    case 0 -> {
+                        System.out.print("Até a próxima! =^.^=");
+                        continue;
+                    }
                 }
+                escolha = InputUtils.lerInt("Gostaria de pedir algo mais? 0) Não | 1) Sim ");
+                if(escolha == 0)
+                    System.out.print("Até a próxima! =^.^=");
+                
+            } catch (NullPointerException npe){
+                System.out.print("Entrada vazia: " + npe.getMessage());
+            } catch (InputMismatchException ime){
+                System.out.println("Valor de entrada inválida: " + ime.getMessage());
+            } catch(NumberFormatException nfe){
+                System.out.println("Digite um número válido: " + nfe.getMessage());
             }
-            escolha = InputUtils.lerInt("Gostaria de pedir algo mais? 0) Não | 1) Sim ");
-            System.out.print("Até a próxima! =^.^=");
-            
-        } catch (NullPointerException npe){
-            System.out.print("Entrada vazia: " + npe.getMessage());
-        } catch (InputMismatchException ime){
-            System.out.println("Valor de entrada inválida: " + ime.getMessage());
-        } catch(NumberFormatException nfe){
-            System.out.println("Digite um número válido: " + nfe.getMessage());
-        }
     } while (escolha != 0);
 
         InputUtils.fechar();
