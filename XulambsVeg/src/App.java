@@ -18,10 +18,20 @@ public class App {
         return divisor.repeat(repeticoes);
     }
 
+    /**
+     * Retorna uma linha divisória composta por 20 traços.
+     * Útil para separar visualmente informações em saídas
+     * @return  uma string contendo 20 caracteres de traço ("-")
+     */
     public static String detalheDivisorTraco(){
         return "-".repeat(20);
     }
 
+    /**
+     * Retorna uma mensagem de boas-vindas padrão do sistema.
+     * "Bem-vindo(a) ao XulambsVeg!".
+     * @return uma string com a mensagem de boas-vindas
+     */
     public static String cabecalho(){
         return " --- Bem-vindo(a) ao XulambsVeg! ---";
     }
@@ -117,8 +127,7 @@ public class App {
     }
 
 
-    /*
-     * pro futuro
+    /* pro futuro editarPedido
      * public static void editarPedido(){
      *  int escolha = InputUtils.lerInt("1) Concluir Pedido | 2) Editar Pizza");
 
