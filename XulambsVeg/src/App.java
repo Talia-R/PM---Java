@@ -91,7 +91,30 @@ public class App {
     //#endregion
 
     //#region Pedido
+        public Pedido abrirPedido(){
+            return new Pedido();
+        }
 
+        public String relatorioPedido(int idPedido){
+            for(Pedido pedido : pedidos){
+                if(pedido.getIdPedido() == idPedido)
+                    return pedido.relatorio();    
+            }
+            return "Pedido não encontrado";
+        }
+
+        public Pedido localizarPedido(int idPedido){
+            for(Pedido pedido : pedidos){
+                if(pedido.getIdPedido() == idPedido)
+                    return pedido;
+            }
+            return pedidoProcurado;
+        }
+
+        public void fecharPedido(Pedido pedido){
+            pedidos.add(pedido);
+            pedido.fecharPedido();
+        }
     //#endregion
 
     public static void main(String[] args) throws Exception {

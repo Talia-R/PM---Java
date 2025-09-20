@@ -18,6 +18,9 @@ public class Pedido {
         ultimoPedido++;
     }
 
+    public int getIdPedido(){
+        return idPedido;
+    }
     /**
      * Verifica se o pedido está aberto (aceitando adições)
      * @return se estiver aberto retorna true
