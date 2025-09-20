@@ -89,10 +89,10 @@ public class Pizza {
      * Exibe uma nota descritiva da pizza com descrição dos ingredientes (caso tenha) e seu preço.
      * @return string com a descrição e preço da pizza
      */
-    public String gerarNotaDescritiva(){
+    public String relatorio(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
         StringBuilder s = new StringBuilder();
-        s.append("Pizza no valor de: " + moeda.format(getPrecoPadrao()));
+        s.append("Pizza padrão no valor de: " + moeda.format(getPrecoPadrao()));
         if(qntAdicionaisAtual > 0){
             s.append(String.format(
                 " com %d adicionais no valor de %s", 

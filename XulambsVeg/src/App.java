@@ -3,7 +3,8 @@ import java.util.InputMismatchException;
 import java.util.LinkedList;
 
 public class App {
-    static LinkedList<Pizza> pizzas = new LinkedList<>();
+    // static LinkedList<Pizza> pizzas = new LinkedList<>();
+    static LinkedList<Pedido> pedidos = new LinkedList<>();
     static NumberFormat moeda = NumberFormat.getCurrencyInstance();
 
     public static String detalheDivisor(String divisor, int repeticoes){
@@ -33,12 +34,13 @@ public class App {
      * Cria um objeto pizza e o adiciona na lista de Pizzas.
      * Exibe o relatorio (nota de compra).
      */
-    public static void comprarPizza(){
+    public static Pizza comprarPizza(){
         Pizza novaPizza = new Pizza();
         montarPizza(novaPizza);
-        pizzas.add(novaPizza);
-        System.out.println(notaDeCompra());
+        // pizzas.add(novaPizza);
+        System.out.println(notaDeCompra(novaPizza));
         System.out.println(detalheDivisorTraco());
+        return novaPizza;
     }
 
     public static void montarPizza(Pizza pizza){
@@ -50,27 +52,9 @@ public class App {
         pizza.editarPizza(1, qntAdicionais);
     }
 
-    public static String notaDeCompra(){
+    public static String notaDeCompra(Pizza pizza){
         StringBuilder s = new StringBuilder();
-
-        for(int i = 0; i < pizzas.size(); i++){
-            s.append(String.format("%d) %s", (i+1), pizzas.get(i).gerarNotaDescritiva()));
-
-            if(i >= 1){
-                int precoFinal = 0;
-                for(Pizza pizza: pizzas){
-                    precoFinal += pizza.getPrecoFinal();
-                }
-                s.append("\nTotal Pedido: " + moeda.format(precoFinal));
-            }
-
-            // quebra de linha apos pizzas:
-            if(pizzas.size() >= 1 && i == pizzas.size() - 1){
-                break;
-            }
-            s.append("\n");
-        }
-
+        System.out.println(pizza.relatorio());
         return s.toString();
     }
 
