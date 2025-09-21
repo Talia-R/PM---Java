@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public class App {
     // static LinkedList<Pizza> pizzas = new LinkedList<>();
-    static LinkedList<Pedido> pedidos = new LinkedList<>();
+    static LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
     static NumberFormat moeda = NumberFormat.getCurrencyInstance();
 
     /**
@@ -35,6 +35,30 @@ public class App {
     public static String cabecalho(){
         return " --- Bem-vindo(a) ao XulambsVeg! ---";
     }
+    
+    static void limparTela() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    /**
+     * Exibe o menu de opções possiveis no sistema
+     * @return menu com opções numeradas
+     */
+    public static String menu(){
+        StringBuilder s = new StringBuilder();
+        s.append(detalheDivisorTraco());
+        s.append("\n0) Sair");
+        s.append("\n1) Abrir pedido");
+        s.append("\n2) Alterar pedido");
+        s.append("\n3) Relatório pedido");
+        s.append("\n4) Encerrar pedido");
+        s.append("\n5) Relatório de todos os pedidos");
+        s.append("\n");
+        s.append(detalheDivisorTraco());
+        
+        return s.toString();
+    }
 
     /**
      * Exibe o cardápio enumerado
@@ -42,6 +66,8 @@ public class App {
      */
     public static String cardapio(){
         StringBuilder s = new StringBuilder();
+        s.append(detalheDivisorTraco());
+        s.append("\n");
         s.append("Cardápio: ");
         s.append("\n0) Sair");
         s.append("\n1) Pizza: " + moeda.format(Pizza.getPrecoPadrao()));
@@ -70,7 +96,7 @@ public class App {
          * @param pizza pizza a ser alterada de acordo com os adicionais passados
          */
         public static void montarPizza(Pizza pizza){
-            System.out.print("Vamos montar sua pizza: ");
+            System.out.print("\nVamos montar sua pizza: ");
             int qntAdicionais = InputUtils.lerInt("\nQuantos adicionais gostaria de incluir (máx: " + 
                                                     Pizza.getMaxIngredientesAdicionais() +
                                                     ")?: ");
@@ -91,51 +117,151 @@ public class App {
     //#endregion
 
     //#region Pedido
-        public Pedido abrirPedido(){
-            return new Pedido();
+        /**
+         * Abre um novo pedido. Assim que o pedido é aberto, um pizza é adicionada a ele
+         * @return
+         */
+        public static Pedido abrirPedido(){
+            Pedido novoPedido = new Pedido();
+            System.out.print(novoPedido.cabecalhoPedido());
+            novoPedido.adicionar(comprarPizza());
+            todosOsPedidos.add(novoPedido);
+            return novoPedido;
         }
 
-        public String relatorioPedido(int idPedido){
-            for(Pedido pedido : pedidos){
-                if(pedido.getIdPedido() == idPedido)
-                    return pedido.relatorio();    
+        /**
+         * Localiza um pedido na lista de todos os pedidos.
+         * @param idPedido id do pedido a ser localizado.
+         * @return se a lista com todos os pedidos não for vazia, retorna o pedido procurado caso esteja vazia retorna null.
+         */
+        public static Pedido localizarPedido(int idPedido){
+            if(todosOsPedidos.size() != 0){
+                for(Pedido pedido : todosOsPedidos){
+                    if(pedido.getIdPedido() == idPedido)
+                        return pedido;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Altera um pedido.
+         * Pode adicionar, remover ou editas as pizzas dentro de um pedido.
+         * @param idPedidoAtual id do pedido a ser alterado.
+         * @return pedido após ter sido alterado.
+         */
+        public static Pedido alterarPedido(int idPedidoAtual){
+            Pedido pedido = localizarPedido(idPedidoAtual);
+            System.out.println(pedido.relatorio());
+            int escolha = InputUtils.lerInt("\n 1) Adicionar itens | 2) Remover Itens | 3) Editar pizzas: ");
+            if(escolha == 1){
+                pedido.adicionar(comprarPizza());
+            } else if(escolha == 2){
+                int item = InputUtils.lerInt("\nQual item irá excluir?: ");
+                System.out.println(pedido.relatorio());
+                pedido.excluir(item);
+            } else if(escolha == 3){
+                System.out.println(pedido.cabecalhoPedido());
+                System.out.print(pedido.relatorioTodasPizzas());
+                escolha = InputUtils.lerInt("Qual pizza quer editar?");
+                Pizza pizzaParaEdicao = pedido.encontrarPizza(escolha);
+                System.out.println(pizzaParaEdicao);
+                escolha = InputUtils.lerInt("1) Incluir Ingredientes | 2) Remover Ingredientes");
+                int novaQntIngredientes = InputUtils.lerInt("Quantos ingredientes quer incluir/remover?: ");
+                pizzaParaEdicao.editarPizza(escolha, novaQntIngredientes);
+            }
+            System.out.println("\n" + pedido.relatorio());
+            return pedido;
+        } 
+
+        /**
+         * Exibe o relatório de um pedido específico.
+         * @param idPedido id do pedido a ter o relatório exibido
+         * @return caso haja elementos em todos os pedidos retorna o relatório do pedido requerido, caso não retorna "Pedido não encontrado".
+         */
+        public static String relatorioPedido(int idPedido){
+            if(todosOsPedidos.size() > 0){
+                Pedido pedido = localizarPedido(idPedido);
+                return pedido.relatorio();
             }
             return "Pedido não encontrado";
         }
 
-        public Pedido localizarPedido(int idPedido){
-            for(Pedido pedido : pedidos){
-                if(pedido.getIdPedido() == idPedido)
-                    return pedido;
+        /**
+         * Retorna o relatório de todos os pedidos salvos na lista 'todos os pedidos'.
+         * @return um relatório de todos os pedidos salvos na lista.
+         */
+        public static String relatorioTodosOsPedidos(){
+            StringBuilder s = new StringBuilder();
+            if(todosOsPedidos.size() > 0){
+                for(Pedido pedido : todosOsPedidos){
+                    s.append(pedido.relatorio() + "\n");
+                    s.append("\n");
+                }
+            } else {
+                s.append("Lista vazia\n");
             }
-            return pedidoProcurado;
+            return s.toString();
         }
 
-        public void fecharPedido(Pedido pedido){
-            pedidos.add(pedido);
-            pedido.fecharPedido();
-        }
     //#endregion
 
     public static void main(String[] args) throws Exception {
         System.out.println(cabecalho());
-
+        Pedido pedidoAtual = null;
+        int idPedidoAtual = 0;
         int escolha = -1;
+        limparTela();
         do{
             try{
-                System.out.println(cardapio());
+                System.out.println(menu());
                 escolha = InputUtils.lerInt("Opção:  ");
                 switch(escolha){
-                    case 1 -> comprarPizza();
-                //    case 3 -> editarPedido();
                     case 0 -> {
-                        System.out.print("Até a próxima! =^.^=");
+                        System.out.print("\nAté a próxima! =^.^=");
                         continue;
                     }
+                    case 1 -> {
+                        System.out.println("\n --- Criando um novo pedido ---");
+                        System.out.println(cardapio());
+                        abrirPedido();
+                    }
+                    case 2 -> {
+                    System.out.println("\n --- Alterando um pedido ---");
+                    if(todosOsPedidos.size() > 0){
+                    System.out.println(relatorioTodosOsPedidos());
+                    idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
+                    alterarPedido(idPedidoAtual);// alterar pedido (adicionar ou remover itens)
+                    continue;
+                    }
+                    System.out.println("Não há pedidos registrados");
+                    }
+                    case 3 -> {
+                    System.out.println("\n --- Exibindo relatório de um pedido ---");
+                    if(todosOsPedidos.size() > 0){
+                        idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
+                        System.out.println(relatorioPedido(idPedidoAtual));
+                        continue;
+                    }
+                    System.out.println("Não há pedidos registrados");
+                    }
+                    case 4 ->{
+                    if(todosOsPedidos.size() > 0){
+                    System.out.println("\n --- Finalizando pedido ---");
+                    idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
+                    for(Pedido pedido : todosOsPedidos){
+                        if(idPedidoAtual == pedido.getIdPedido()){
+                            pedidoAtual = pedido;
+                        }
+                    }   
+                    pedidoAtual.fecharPedido();
+                    System.out.println(String.format("Pedido %d fechado.", idPedidoAtual));
+                    continue;
+                } 
+                System.out.println("Não há pedidos registrados");    
                 }
-                escolha = InputUtils.lerInt("Gostaria de pedir algo mais? 0) Não | 1) Sim ");
-                if(escolha == 0)
-                    System.out.print("Até a próxima! =^.^=");
+                    case 5 -> System.out.print(relatorioTodosOsPedidos());
+                }
                 
             } catch (NullPointerException npe){
                 System.out.print("Entrada vazia: " + npe.getMessage());
@@ -148,18 +274,5 @@ public class App {
 
         InputUtils.fechar();
     }
-
-
-    /* pro futuro editarPedido
-     * public static void editarPedido(){
-     *  int escolha = InputUtils.lerInt("1) Concluir Pedido | 2) Editar Pizza");
-
-        while (escolha == 2) {
-        escolha = InputUtils.lerInt("1) Adicionar Ingredientes | 2) Remover Ingredientes");
-        int novaQntIngredientes = InputUtils.lerInt("\nQuantos ingredientes?: ");
-        novaPizza.editarPizza(escolha, novaQntIngredientes);
-        }
-    }
-     */
 
 }
