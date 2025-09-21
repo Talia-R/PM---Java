@@ -78,6 +78,10 @@ public class App {
         return s.toString();
     }
 
+    /**
+     * Exibe um cardápio com os valores das bordas.
+     * @return string com a descrição e preço das bordas.
+     */
     public static String cardapioBordas(){
         StringBuilder s = new StringBuilder();
         EBordas[] todasAsBordas = EBordas.values();
@@ -161,7 +165,7 @@ public class App {
 
         /**
          * Altera um pedido.
-         * Pode adicionar, remover ou editas as pizzas dentro de um pedido.
+         * Pode adicionar, remover ou editar as pizzas dentro de um pedido.
          * @param idPedidoAtual id do pedido a ser alterado.
          * @return pedido após ter sido alterado.
          */
