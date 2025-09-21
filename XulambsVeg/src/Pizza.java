@@ -59,9 +59,14 @@ public class Pizza {
         }
     }
 
-    public double adicionarBorda(int indexBorda){
+    /**
+     * Adiciona uma borda a pizza.
+     * @param indexBorda valor de index da borda
+     * @return preço da borda
+     */
+    public void adicionarBorda(int indexBorda){
         this.borda = EBordas.values()[indexBorda - 1];
-        return borda.getPrecoBorda();
+        // return borda.getPrecoBorda();
     }
 
     /**
@@ -111,7 +116,7 @@ public class Pizza {
         s.append(String.format("Pizza padrão no valor de: %s", moeda.format(getPrecoPadrao())));
         if(qntAdicionaisAtual > 0){
             s.append(String.format(
-                " com %d adicionais (%s).", 
+                " com %d adicionais (%s)", 
                 qntAdicionaisAtual,
                 moeda.format(calcularPrecoAdicional())
                 ));
