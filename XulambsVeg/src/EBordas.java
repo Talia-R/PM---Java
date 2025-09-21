@@ -1,7 +1,7 @@
 import java.text.NumberFormat;
 
 public enum EBordas {
-    SEM_BORDA("Borda Tradiciona", 0),
+    SEM_BORDA("Borda Tradicional", 0),
     REQUEIJAO("Borda de Requeijão", 7d),
     CHEDDAR("Borda de Cheddar", 10d),
     CHOCOLATE("Borda de Chocolate", 8d);
@@ -14,12 +14,12 @@ public enum EBordas {
         this.preco = preco;
     }
 
-    public String getDescricao(){
+    public String getDescricaoBorda(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
         return String.format("%s: %s", descricao, moeda.format(preco));
     }
 
-    public double getPreco(){
+    public double getPrecoBorda(){
         return preco;
     }
 }

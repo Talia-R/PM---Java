@@ -70,7 +70,7 @@ public class Pedido {
         StringBuilder s = new StringBuilder();
         int qntPizzas = 1;
         for(Pizza pizza : todasAsPizzas){
-            s.append((qntPizzas++) + pizza.relatorio() + "\n");
+            s.append((qntPizzas++) + ") " + pizza.relatorio() + "\n");
         }
         return s.toString();
     }

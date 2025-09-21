@@ -5,11 +5,18 @@ public class Pizza {
     private static final double CUSTO_ADICIONAIS = 5d;
     private static double precoBase = 29d;
     private int qntAdicionaisAtual = 0;
+    private EBordas borda;
 
     public Pizza(){};
 
     public Pizza(int qntAdicionais){
         qntAdicionaisAtual = qntAdicionais;
+        this.borda = EBordas.SEM_BORDA;
+    }
+
+    public Pizza(int qntAdicionais, EBordas borda){
+        qntAdicionaisAtual = qntAdicionais;
+        this.borda = borda;
     }
 
     public static double getPrecoPadrao(){
@@ -52,6 +59,11 @@ public class Pizza {
         }
     }
 
+    public double adicionarBorda(int indexBorda){
+        this.borda = EBordas.values()[indexBorda - 1];
+        return borda.getPrecoBorda();
+    }
+
     /**
      * Edita uma pizza podendo incluir ou remover ingredientes
      * @param escolha int que decide qual operação quer fazer (adicionar ou remover) ingredientes
@@ -74,15 +86,19 @@ public class Pizza {
     }
 
     /**
-     * Calcula o valor final da pizza. Considera o valor padrão e os valores dos adicionais
+     * Calcula o valor final da pizza. Considera o valor padrão, os valores dos adicionais e o valor da borda
      * @return double com a soma do valor padrão e adicionais
      */
     private double precoFinal(){
-        return precoBase + calcularPrecoAdicional();
+        return precoBase + calcularPrecoAdicional() + borda.getPrecoBorda();
     }
 
     public double getPrecoFinal(){
         return precoFinal();
+    }
+
+    public static double getPrecoAdicionais(){
+        return CUSTO_ADICIONAIS;
     }
 
     /**
@@ -92,15 +108,18 @@ public class Pizza {
     public String relatorio(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
         StringBuilder s = new StringBuilder();
-        s.append("Pizza padrão no valor de: " + moeda.format(getPrecoPadrao()));
+        s.append(String.format("Pizza padrão no valor de: %s", moeda.format(getPrecoPadrao())));
         if(qntAdicionaisAtual > 0){
             s.append(String.format(
-                " com %d adicionais no valor de %s", 
-                qntAdicionaisAtual, 
+                " com %d adicionais (%s).", 
+                qntAdicionaisAtual,
                 moeda.format(calcularPrecoAdicional())
                 ));
-            s.append(" | Total: " + moeda.format(precoFinal()));
+            }
+        if(borda != EBordas.values()[0]){
+            s.append(String.format(". %s", borda.getDescricaoBorda()));
         }
+            s.append(" | Total: " + moeda.format(precoFinal()));
             return s.toString();
     }
 

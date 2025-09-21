@@ -69,11 +69,24 @@ public class App {
         s.append(detalheDivisorTraco());
         s.append("\n");
         s.append("Cardápio: ");
-        s.append("\n0) Sair");
-        s.append("\n1) Pizza: " + moeda.format(Pizza.getPrecoPadrao()));
+        s.append("\nPizza Padrão (borda comum e sem adicionais): " + moeda.format(Pizza.getPrecoPadrao()));
+        s.append("\nAdicionais: " + moeda.format(Pizza.getPrecoAdicionais()));
+        s.append("\n" + cardapioBordas());
         s.append("\n");
         s.append(detalheDivisorTraco());
         
+        return s.toString();
+    }
+
+    public static String cardapioBordas(){
+        StringBuilder s = new StringBuilder();
+        EBordas[] todasAsBordas = EBordas.values();
+        int qntBordas = 1;
+        s.append("\n --- Bordas ---\n");
+        for(EBordas borda : todasAsBordas){
+            s.append(String.format("%d) %s \n", qntBordas++, borda.getDescricaoBorda()));
+        }
+
         return s.toString();
     }
 
@@ -102,6 +115,8 @@ public class App {
                                                     ")?: ");
 
             pizza.editarPizza(1, qntAdicionais);
+            int indexBorda = InputUtils.lerInt("Escolha a borda: ");
+            pizza.adicionarBorda(indexBorda);
         }
 
         /**
@@ -163,12 +178,18 @@ public class App {
             } else if(escolha == 3){
                 System.out.println(pedido.cabecalhoPedido());
                 System.out.print(pedido.relatorioTodasPizzas());
-                escolha = InputUtils.lerInt("Qual pizza quer editar?");
+                escolha = InputUtils.lerInt("Qual pizza quer editar?: ");
                 Pizza pizzaParaEdicao = pedido.encontrarPizza(escolha);
-                System.out.println(pizzaParaEdicao);
-                escolha = InputUtils.lerInt("1) Incluir Ingredientes | 2) Remover Ingredientes");
-                int novaQntIngredientes = InputUtils.lerInt("Quantos ingredientes quer incluir/remover?: ");
-                pizzaParaEdicao.editarPizza(escolha, novaQntIngredientes);
+                System.out.println(pizzaParaEdicao.relatorio());
+                escolha = InputUtils.lerInt("1) Incluir Ingredientes | 2) Remover Ingredientes | 3) Trocar Borda : ");
+                if(escolha == 3){
+                    System.out.println(cardapioBordas());
+                    int novaBorda = InputUtils.lerInt("Por qual borda gostaria de trocar?: ");
+                    pizzaParaEdicao.adicionarBorda(novaBorda);
+                } else if(escolha == 1 || escolha == 2){
+                    int novaQntIngredientes = InputUtils.lerInt("Quantos ingredientes quer incluir/remover?: ");
+                    pizzaParaEdicao.editarPizza(escolha, novaQntIngredientes);
+                }
             }
             System.out.println("\n" + pedido.relatorio());
             return pedido;
