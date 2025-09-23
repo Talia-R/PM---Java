@@ -207,6 +207,37 @@ public class App {
         }
 
         /**
+         * Retorna uma lista com todos os pedidos que estão marcados com status de aberto.
+         * @return Lista com todos os pedidos que estão em aberto.
+         */
+        private static LinkedList<Pedido> criarListaPedidosAbertos(LinkedList<Pedido> todosOsPedidos){
+            LinkedList<Pedido> todosPedidosAbertos = new LinkedList<>();
+
+            for(Pedido pedido : todosOsPedidos){
+                if(pedido.getStatus()){
+                    todosPedidosAbertos.add(pedido);
+                }
+            }
+            return todosPedidosAbertos;
+        }
+
+        /**
+         * Verifica se um pedido está aberto.
+         * @param todosOsPedidosAbertos lista com todos os pedidos em aberto.
+         * @param idPedido id do pedido que quer encontrar
+         * @return se o pedido procurado está em aberto
+         */
+        private static boolean verificarPedidoAberto(LinkedList<Pedido> todosOsPedidosAbertos, int idPedido){
+          boolean pedidoEstaAberto = false;
+            for(Pedido pedido : todosOsPedidosAbertos){
+                if(idPedido == pedido.getIdPedido()){
+                    pedidoEstaAberto = true;
+                }
+          } 
+          return pedidoEstaAberto; 
+        }
+
+        /**
          * Altera um pedido.
          * Pode adicionar, remover ou editar as pizzas dentro de um pedido.
          * @param idPedidoAtual id do pedido a ser alterado.
@@ -272,24 +303,12 @@ public class App {
             return s.toString();
         }
 
-        /**
-         * Retorna uma lista com todos os pedidos que estão marcados com status de aberto.
-         * @return Lista com todos os pedidos que estão em aberto.
-         */
-        public LinkedList<Pedido> mostrarApenasPedidosAbertos(LinkedList<Pedido> todosOsPedidos){
-            LinkedList<Pedido> apenasPedidosAbertos = new LinkedList<>();
-            for(Pedido pedido : todosOsPedidos){
-                if(pedido.getStatus()){
-                    apenasPedidosAbertos.add(pedido);
-                }
-            }
-            return apenasPedidosAbertos;
-        }
 
     //#endregion
 
     public static void main(String[] args) throws Exception {
         LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
+        LinkedList<Pedido> todosOsPedidosAbertos = criarListaPedidosAbertos(todosOsPedidos);
 
         System.out.println(cabecalho());
         Pedido pedidoAtual = null;
@@ -311,12 +330,17 @@ public class App {
                         abrirPedido(todosOsPedidos);
                     }
                     case 2 -> {
+                    
                     System.out.println("\n --- Alterando um pedido ---");
                     if(todosOsPedidos.size() > 0){
-                    System.out.println(relatorioTodosOsPedidos(todosOsPedidos));
-                    idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
-                    alterarPedido(todosOsPedidos, idPedidoAtual);// alterar pedido (adicionar ou remover itens)
-                    continue;
+                        System.out.println(relatorioTodosOsPedidos(todosOsPedidos));
+                        idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
+                        if(verificarPedidoAberto(todosOsPedidosAbertos, idPedidoAtual)){
+                            alterarPedido(todosOsPedidos, idPedidoAtual);// alterar pedido (adicionar ou remover itens)
+                        }
+                        Pedido pedido = localizarPedido(todosOsPedidos, idPedidoAtual);
+                        System.out.println(String.format("O pedido %02d está %s",idPedidoAtual, pedido.definirStatus().toLowerCase()));
+                        continue;
                     }
                     System.out.println("Não há pedidos registrados");
                     }
