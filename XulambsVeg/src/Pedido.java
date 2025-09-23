@@ -20,6 +20,11 @@ public class Pedido {
     public int getIdPedido(){
         return idPedido;
     }
+
+    public boolean getStatus(){
+        return aberto;
+    }
+
     /**
      * Verifica se o pedido está aberto (aceitando adições)
      * @return se estiver aberto retorna true

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public class App {
     // static LinkedList<Pizza> pizzas = new LinkedList<>();
-    static LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
+    // static LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
     static NumberFormat moeda = NumberFormat.getCurrencyInstance();
 
     /**
@@ -104,7 +104,7 @@ public class App {
             montarPizza(novaPizza);
             // pizzas.add(novaPizza);
             System.out.println(notaDeCompra(novaPizza));
-            System.out.println(detalheDivisorTraco());
+            // System.out.println(detalheDivisorTraco());
             return novaPizza;
         }
 
@@ -118,7 +118,7 @@ public class App {
                                                     Pizza.getMaxIngredientesAdicionais() +
                                                     ")?: ");
 
-            pizza.editarPizza(1, qntAdicionais);
+            pizza.editarQntIngredPizza(1, qntAdicionais);
             int indexBorda = InputUtils.lerInt("Escolha a borda: ");
             pizza.adicionarBorda(indexBorda);
         }
@@ -133,6 +133,49 @@ public class App {
             System.out.println(pizza.relatorio());
             return s.toString();
         }
+
+        /**
+         * Prepara uma pizza para edição dentro de um pedido específico.
+         * Exibe o cabeçalho do pedido e o relatório de todas as pizzas,
+         * solicita ao usuário qual pizza deseja editar e retorna essa pizza.
+         * @param pedidoEscolhido O pedido que contém a pizza a ser editada.
+         * @return A pizza selecionada pelo usuário para edição.
+         */
+        private static Pizza prepararPizzaParaEdicao(Pedido pedidoEscolhido){
+            System.out.println(pedidoEscolhido.cabecalhoPedido());
+            System.out.print(pedidoEscolhido.relatorioTodasPizzas());
+            
+            int posicaoPizza = InputUtils.lerInt("Qual pizza quer editar?: ");
+            
+            Pizza pizzaParaEdicao = pedidoEscolhido.encontrarPizza(posicaoPizza);
+            System.out.println(pizzaParaEdicao.relatorio());
+            return pizzaParaEdicao;
+        }   
+
+        /**
+         * Altera a quantidade de ingredientes de uma pizza específica.
+         * Solicita ao usuário a nova quantidade de ingredientes via console e atualiza a pizza.
+         *
+         * @param pizzaParaEdicao A pizza que terá a quantidade de ingredientes alterada.
+         * @param escolha Indica a ação do usuário: 
+         *               1 para incluir ingredientes, 
+         *               2 para remover ingredientes.
+         */
+        private static void alterarQntIngred(Pizza pizzaParaEdicao, int escolha){
+            int novaQntIngredientes = InputUtils.lerInt("Quantos ingredientes quer incluir/remover?: ");
+            pizzaParaEdicao.editarQntIngredPizza(escolha, novaQntIngredientes);
+        }
+
+        /**
+         * Altera a borda de uma pizza específica.
+         * Solicita ao usuário o número da nova borda via console e atualiza a pizza.
+         *
+         * @param pizzaParaEdicao A pizza que terá sua borda alterada.
+         */
+        private static void alterarBorda(Pizza pizzaParaEdicao){
+            int novaBorda = InputUtils.lerInt("Por qual borda gostaria de trocar?: ");
+            pizzaParaEdicao.adicionarBorda(novaBorda);
+        }
     //#endregion
 
     //#region Pedido
@@ -140,7 +183,7 @@ public class App {
          * Abre um novo pedido. Assim que o pedido é aberto, um pizza é adicionada a ele
          * @return
          */
-        public static Pedido abrirPedido(){
+        public static Pedido abrirPedido(LinkedList<Pedido> todosOsPedidos){
             Pedido novoPedido = new Pedido();
             System.out.print(novoPedido.cabecalhoPedido());
             novoPedido.adicionar(comprarPizza());
@@ -153,8 +196,8 @@ public class App {
          * @param idPedido id do pedido a ser localizado.
          * @return se a lista com todos os pedidos não for vazia, retorna o pedido procurado caso esteja vazia retorna null.
          */
-        public static Pedido localizarPedido(int idPedido){
-            if(todosOsPedidos.size() != 0){
+        public static Pedido localizarPedido(LinkedList<Pedido> todosOsPedidos, int idPedido){
+            if(todosOsPedidos.size() > 0){
                 for(Pedido pedido : todosOsPedidos){
                     if(pedido.getIdPedido() == idPedido)
                         return pedido;
@@ -169,31 +212,31 @@ public class App {
          * @param idPedidoAtual id do pedido a ser alterado.
          * @return pedido após ter sido alterado.
          */
-        public static Pedido alterarPedido(int idPedidoAtual){
-            Pedido pedido = localizarPedido(idPedidoAtual);
+        public static Pedido alterarPedido(LinkedList<Pedido> todosOsPedidos, int idPedidoAtual){
+            Pedido pedido = localizarPedido(todosOsPedidos, idPedidoAtual);
             System.out.println(pedido.relatorio());
-            int escolha = InputUtils.lerInt("\n 1) Adicionar itens | 2) Remover Itens | 3) Editar pizzas: ");
-            if(escolha == 1){
-                pedido.adicionar(comprarPizza());
-            } else if(escolha == 2){
-                int item = InputUtils.lerInt("\nQual item irá excluir?: ");
-                System.out.println(pedido.relatorio());
-                pedido.excluir(item);
-            } else if(escolha == 3){
-                System.out.println(pedido.cabecalhoPedido());
-                System.out.print(pedido.relatorioTodasPizzas());
-                escolha = InputUtils.lerInt("Qual pizza quer editar?: ");
-                Pizza pizzaParaEdicao = pedido.encontrarPizza(escolha);
-                System.out.println(pizzaParaEdicao.relatorio());
-                escolha = InputUtils.lerInt("1) Incluir Ingredientes | 2) Remover Ingredientes | 3) Trocar Borda : ");
-                if(escolha == 3){
-                    System.out.println(cardapioBordas());
-                    int novaBorda = InputUtils.lerInt("Por qual borda gostaria de trocar?: ");
-                    pizzaParaEdicao.adicionarBorda(novaBorda);
-                } else if(escolha == 1 || escolha == 2){
-                    int novaQntIngredientes = InputUtils.lerInt("Quantos ingredientes quer incluir/remover?: ");
-                    pizzaParaEdicao.editarPizza(escolha, novaQntIngredientes);
+
+            int opcaoEdicao = InputUtils.lerInt("\n 1) Adicionar Pizzas | 2) Remover Pizzas | 3) Editar pizzas: ");
+
+            switch(opcaoEdicao){
+                case 1 -> pedido.adicionar(comprarPizza());
+                case 2 -> {
+                    int item = InputUtils.lerInt("\nQual item irá excluir?: ");
+                    System.out.println(pedido.relatorio());
+                    pedido.excluir(item);
                 }
+                case 3 -> {
+                    Pizza pizzaParaEdicao = prepararPizzaParaEdicao(pedido);
+                    int acao = InputUtils.lerInt("1) Incluir Ingredientes | 2) Remover Ingredientes | 3) Trocar Borda : ");
+
+                    switch(acao) {
+                        case 1,2 -> alterarQntIngred(pizzaParaEdicao, acao);
+                        case 3 -> {                    
+                            System.out.println(cardapioBordas());
+                            alterarBorda(pizzaParaEdicao);
+                        }
+                    }
+                    }
             }
             System.out.println("\n" + pedido.relatorio());
             return pedido;
@@ -204,9 +247,9 @@ public class App {
          * @param idPedido id do pedido a ter o relatório exibido
          * @return caso haja elementos em todos os pedidos retorna o relatório do pedido requerido, caso não retorna "Pedido não encontrado".
          */
-        public static String relatorioPedido(int idPedido){
+        public static String relatorioPedido(LinkedList<Pedido> todosOsPedidos, int idPedido){
             if(todosOsPedidos.size() > 0){
-                Pedido pedido = localizarPedido(idPedido);
+                Pedido pedido = localizarPedido(todosOsPedidos, idPedido);
                 return pedido.relatorio();
             }
             return "Pedido não encontrado";
@@ -216,7 +259,7 @@ public class App {
          * Retorna o relatório de todos os pedidos salvos na lista 'todos os pedidos'.
          * @return um relatório de todos os pedidos salvos na lista.
          */
-        public static String relatorioTodosOsPedidos(){
+        public static String relatorioTodosOsPedidos(LinkedList<Pedido> todosOsPedidos){
             StringBuilder s = new StringBuilder();
             if(todosOsPedidos.size() > 0){
                 for(Pedido pedido : todosOsPedidos){
@@ -224,14 +267,30 @@ public class App {
                     s.append("\n");
                 }
             } else {
-                s.append("Lista vazia\n");
+                s.append("Não há pedidos registrados\n");
             }
             return s.toString();
+        }
+
+        /**
+         * Retorna uma lista com todos os pedidos que estão marcados com status de aberto.
+         * @return Lista com todos os pedidos que estão em aberto.
+         */
+        public LinkedList<Pedido> mostrarApenasPedidosAbertos(LinkedList<Pedido> todosOsPedidos){
+            LinkedList<Pedido> apenasPedidosAbertos = new LinkedList<>();
+            for(Pedido pedido : todosOsPedidos){
+                if(pedido.getStatus()){
+                    apenasPedidosAbertos.add(pedido);
+                }
+            }
+            return apenasPedidosAbertos;
         }
 
     //#endregion
 
     public static void main(String[] args) throws Exception {
+        LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
+
         System.out.println(cabecalho());
         Pedido pedidoAtual = null;
         int idPedidoAtual = 0;
@@ -249,14 +308,14 @@ public class App {
                     case 1 -> {
                         System.out.println("\n --- Criando um novo pedido ---");
                         System.out.println(cardapio());
-                        abrirPedido();
+                        abrirPedido(todosOsPedidos);
                     }
                     case 2 -> {
                     System.out.println("\n --- Alterando um pedido ---");
                     if(todosOsPedidos.size() > 0){
-                    System.out.println(relatorioTodosOsPedidos());
+                    System.out.println(relatorioTodosOsPedidos(todosOsPedidos));
                     idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
-                    alterarPedido(idPedidoAtual);// alterar pedido (adicionar ou remover itens)
+                    alterarPedido(todosOsPedidos, idPedidoAtual);// alterar pedido (adicionar ou remover itens)
                     continue;
                     }
                     System.out.println("Não há pedidos registrados");
@@ -265,7 +324,7 @@ public class App {
                     System.out.println("\n --- Exibindo relatório de um pedido ---");
                     if(todosOsPedidos.size() > 0){
                         idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
-                        System.out.println(relatorioPedido(idPedidoAtual));
+                        System.out.println(relatorioPedido(todosOsPedidos, idPedidoAtual));
                         continue;
                     }
                     System.out.println("Não há pedidos registrados");
@@ -285,7 +344,7 @@ public class App {
                 } 
                 System.out.println("Não há pedidos registrados");    
                 }
-                    case 5 -> System.out.print(relatorioTodosOsPedidos());
+                    case 5 -> System.out.print(relatorioTodosOsPedidos(todosOsPedidos));
                 }
                 
             } catch (NullPointerException npe){

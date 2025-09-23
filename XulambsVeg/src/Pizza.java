@@ -74,7 +74,7 @@ public class Pizza {
      * @param escolha int que decide qual operação quer fazer (adicionar ou remover) ingredientes
      * @param novaQntIngredientes int com a quantidade de ingredientes que quer editar
      */
-    public void editarPizza(int escolha, int novaQntIngredientes){
+    public void editarQntIngredPizza(int escolha, int novaQntIngredientes){
         if(escolha == 1){
             incluirAdicionais(novaQntIngredientes);
         } else if(escolha == 2){
