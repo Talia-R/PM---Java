@@ -2,6 +2,8 @@ package com.xulambsveg.foods.Models;
 
 import java.text.NumberFormat;
 
+import com.xulambsveg.foods.DTO.PizzaDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "TB_PIZZAS")
 public class Pizza {
     private static final int MAX_INGREDIENTES_ADICIONAIS = 8;
     private static final double CUSTO_ADICIONAIS = 5d;
@@ -19,10 +20,8 @@ public class Pizza {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_pizza")
     private int idPizza;
 
-    @Column(name = "qnt_ingredientes")
     private int qntAdicionaisAtual = 0;
 
     public Pizza(){};
@@ -146,7 +145,8 @@ public class Pizza {
             return s.toString();
     }
 
-    //a pizza vai saber oq vendeu a partir do relatorio
-    // comeca 
+    public PizzaDTO criarDTO(){
+        return new PizzaDTO(idPizza, precoFinal(), relatorio());
+    }
     
 }

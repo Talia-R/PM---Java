@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.xulambsveg.foods.DTO.PizzaDTO;
 import com.xulambsveg.foods.Models.Pizza;
 
 import jakarta.persistence.EntityManager;
@@ -20,23 +21,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PizzaController {
 
     @PersistenceUnit
-    private EntityManagerFactory emf;
+    private EntityManagerFactory factory;
 
-    @PostMapping("/pizzas")
-    public @ResponseBody Pizza criarPizza(@RequestBody String quantos) {
-        int ingre = Integer.parseInt(quantos);
-        Pizza p = new Pizza(ingre);
-        EntityManager manager = emf.createEntityManager();
+    @PostMapping("/pizzas/{quantidade}")
+    public @ResponseBody Pizza criarPizza(@PathVariable int quantidade) {
+        Pizza novaPizza = new Pizza(quantidade);
+        EntityManager manager = factory.createEntityManager();
         manager.getTransaction().begin();
-        manager.persist(p);
+        manager.persist(novaPizza);
         manager.getTransaction().commit();
-        return p;
+        return novaPizza;
     }
 
     @GetMapping("/pizzas/{id}")
-    public @ResponseBody Pizza buscarPizza(@PathVariable int id) {
-        EntityManager manager = emf.createEntityManager();
-        return manager.find(Pizza.class, id);
+    public @ResponseBody PizzaDTO buscarPizza(@PathVariable int id){
+        EntityManager manager = factory.createEntityManager();
+        Pizza qualPizza = manager.find(Pizza.class, id);
+        return qualPizza.criarDTO();
     }
     
     

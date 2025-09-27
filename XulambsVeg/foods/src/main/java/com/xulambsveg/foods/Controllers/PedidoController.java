@@ -29,59 +29,76 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class PedidoController {
    
     @PersistenceUnit
-    private EntityManagerFactory emf;
+    private EntityManagerFactory factory;
 
     @PostMapping("/pedidos")
     public @ResponseBody PedidoDTO criarPedido() {
         Pedido pedido = new Pedido();
-        EntityManager manager = emf.createEntityManager();
+        EntityManager manager = factory.createEntityManager();
         manager.getTransaction().begin();
         manager.persist(pedido);
         manager.getTransaction().commit();
         
-        return pedido.generateDTO();
+        return pedido.criarDTO();
     }
 
-    @GetMapping("/pedidos")
-    public @ResponseBody List<Pedido> todosOsPedidos() {
-        EntityManager manager = emf.createEntityManager();
-        TypedQuery<Pedido> consulta = manager.createQuery("Select P from Pedido P", Pedido.class);
-        return consulta.getResultList();
+    @PutMapping("pedidos/{id}/adicionar")
+    public @ResponseBody PedidoDTO adicionarPizza(@PathVariable int id, @RequestParam int quantidade) {
+        EntityManager manager = factory.createEntityManager();
+        PedidoDTO resposta = null;
+        Pedido qual = manager.find(Pedido.class, id);
+        if(qual != null){
+            Pizza novaPizza = new Pizza(quantidade);
+            qual.adicionar(novaPizza);
+            manager.getTransaction().begin();
+            manager.persist(novaPizza);
+            manager.persist(qual);
+            manager.getTransaction().commit();
+            resposta = qual.criarDTO();
+        }
+        return resposta;
     }
+
+    // @GetMapping("/pedidos")
+    // public @ResponseBody List<Pedido> todosOsPedidos() {
+    //     EntityManager manager = factory.createEntityManager();
+    //     TypedQuery<Pedido> consulta = manager.createQuery("Select P from Pedido P", Pedido.class);
+    //     return consulta.getResultList();
+    // }
     
-    @GetMapping("/pedidos/{id}")
-    public @ResponseBody PedidoDTO buscarPedido(@PathVariable int id) {
-        EntityManager manager = emf.createEntityManager();
-        Pedido pedido = manager.find(Pedido.class, id);
+    // @GetMapping("/pedidos/{id}")
+    // public @ResponseBody PedidoDTO buscarPedido(@PathVariable int id) {
+    //     EntityManager manager = factory.createEntityManager();
+    //     Pedido pedido = manager.find(Pedido.class, id);
 
-        return pedido.generateDTO();
-    }
+    //     return pedido.generateDTO();
+    // }
 
-    @PutMapping("/pedidos/adicionar/{id}")
-    public @ResponseBody Pedido addPizza(@PathVariable int id, @RequestBody Pizza pizza) {
-        EntityManager manager = emf.createEntityManager();
-        Pedido ped = manager.find(Pedido.class, id);
-        if(ped!=null){
-            ped.adicionar(pizza);
-            manager.getTransaction().begin();
-            manager.persist(pizza);
-            manager.persist(ped);
-            manager.getTransaction().commit();
-        }
-        return ped;
-    }
+    // @PutMapping("/pedidos/adicionar/{id}")
+    // public @ResponseBody Pedido addPizza(@PathVariable int id, @RequestBody Pizza pizza) {
+    //     EntityManager manager = factory.createEntityManager();
+    //     Pedido ped = manager.find(Pedido.class, id);
+    //     if(ped!=null){
+    //         ped.adicionar(pizza);
+    //         manager.getTransaction().begin();
+    //         manager.persist(pizza);
+    //         manager.persist(ped);
+    //         manager.getTransaction().commit();
+    //     }
+    //     return ped;
+    // }
 
-    @PutMapping("/pedidos/fechar/{id}")
-    public @ResponseBody Pedido fecharPedido(@PathVariable int id) {
-        EntityManager manager = emf.createEntityManager();
-        Pedido pedido =  manager.find(Pedido.class, id);
-        if(pedido!=null){
-            pedido.fecharPedido();
-            manager.getTransaction().begin();
-            manager.persist(pedido);
-            manager.getTransaction().commit();
-        }
-        return pedido;
-    }
+    // @PutMapping("/pedidos/fechar/{id}")
+    // public @ResponseBody Pedido fecharPedido(@PathVariable int id) {
+    //     EntityManager manager = factory.createEntityManager();
+    //     Pedido pedido =  manager.find(Pedido.class, id);
+    //     if(pedido!=null){
+    //         pedido.fecharPedido();
+    //         manager.getTransaction().begin();
+    //         manager.persist(pedido);
+    //         manager.getTransaction().commit();
+    //     }
+    //     return pedido;
+    // }
     
 }

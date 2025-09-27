@@ -9,12 +9,13 @@ import java.util.List;
 import com.xulambsveg.foods.DTO.PedidoDTO;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "TB_PEDIDOS")
 public class Pedido {
     private static final int MAX_PIZZAS = 100;
 
@@ -22,6 +23,7 @@ public class Pedido {
     private static int ultimoPedido;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idPedido;
     private boolean aberto;
     private int qntPizzas;
@@ -31,7 +33,7 @@ public class Pedido {
 
     public Pedido(){
         todasAsPizzas = new LinkedList<>();
-        idPedido = ++ultimoPedido;
+        // idPedido = ++ultimoPedido;
         data = LocalDate.now();
         aberto = true;
     }
@@ -168,5 +170,9 @@ public class Pedido {
         }
         s.append("\nTotal pedido: " + moeda.format(calcularPrecoFinal()));
         return s.toString();
+    }
+
+    public PedidoDTO criarDTO(){
+        return new PedidoDTO(idPedido, todasAsPizzas.size(),calcularPrecoFinal(), relatorio());
     }
 }
