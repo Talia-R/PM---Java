@@ -16,6 +16,10 @@ public class PedidoEntrega extends Pedido {
         return super.cabecalhoPedido() + " | " + distancia;
     }
 
+    /**
+     * Calcula o valor do frete. De acordo com os valores passados pela taxa.
+     * @return double contendo o valor do frete.
+     */
     private double calcularValorFrete(){
         double precoTaxa = VALOR_FRETE[0];
         if(distancia > DISTANCIAS[0] && distancia <= DISTANCIAS[1]){
@@ -26,6 +30,10 @@ public class PedidoEntrega extends Pedido {
         return precoTaxa;
     }
 
+    /**
+     * Verificar se a lista de pizzas atingiu o valor máximo.
+     * @return retorna false caso não tenha atingido.
+     */
     protected boolean menorMaxPizza(){
         return todasAsPizzas.size() < MAX_QNT_PIZZAS;
     }
@@ -46,8 +54,5 @@ public class PedidoEntrega extends Pedido {
         return super.toString() + " (frete: " + moeda.format(calcularValorFrete()) + ")";
 
     }
-
-    // public double calcularPrecoFinal(){
-    // }
 
 }
