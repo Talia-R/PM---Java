@@ -78,6 +78,12 @@ public class App {
         return s.toString();
     }
 
+    public static String menuEntrega(){
+        StringBuilder s = new StringBuilder();
+        s.append("\n1) Local | 2) Delivery : ");
+        return s.toString();
+    }
+
     /**
      * Exibe um cardápio com os valores das bordas.
      * @return string com a descrição e preço das bordas.
@@ -183,8 +189,13 @@ public class App {
          * Abre um novo pedido. Assim que o pedido é aberto, um pizza é adicionada a ele
          * @return
          */
-        public static Pedido abrirPedido(LinkedList<Pedido> todosOsPedidos){
-            Pedido novoPedido = new Pedido();
+        public static Pedido abrirPedido(LinkedList<Pedido> todosOsPedidos, int modalidadePedido, double distancia){
+            Pedido novoPedido = switch(modalidadePedido) {
+                case 1 -> novoPedido = new Pedido();
+                case 2 -> novoPedido = new PedidoEntrega(distancia);
+                default -> throw new IllegalArgumentException("Modalidade inválida");
+            };
+
             System.out.print(novoPedido.cabecalhoPedido());
             novoPedido.adicionar(comprarPizza());
             todosOsPedidos.add(novoPedido);
@@ -227,8 +238,9 @@ public class App {
          * @param idPedido id do pedido que quer encontrar
          * @return se o pedido procurado está em aberto
          */
-        private static boolean verificarPedidoAberto(LinkedList<Pedido> todosOsPedidosAbertos, int idPedido){
-          boolean pedidoEstaAberto = false;
+        private static boolean verificarPedidoAberto(LinkedList<Pedido> todosOsPedidos, int idPedido){
+            LinkedList<Pedido> todosOsPedidosAbertos = criarListaPedidosAbertos(todosOsPedidos);
+            boolean pedidoEstaAberto = false;
             for(Pedido pedido : todosOsPedidosAbertos){
                 if(idPedido == pedido.getIdPedido()){
                     pedidoEstaAberto = true;
@@ -245,7 +257,7 @@ public class App {
          */
         public static Pedido alterarPedido(LinkedList<Pedido> todosOsPedidos, int idPedidoAtual){
             Pedido pedido = localizarPedido(todosOsPedidos, idPedidoAtual);
-            System.out.println(pedido.relatorio());
+            System.out.println(pedido.toString());
 
             int opcaoEdicao = InputUtils.lerInt("\n 1) Adicionar Pizzas | 2) Remover Pizzas | 3) Editar pizzas: ");
 
@@ -253,7 +265,7 @@ public class App {
                 case 1 -> pedido.adicionar(comprarPizza());
                 case 2 -> {
                     int item = InputUtils.lerInt("\nQual item irá excluir?: ");
-                    System.out.println(pedido.relatorio());
+                    System.out.println(pedido.toString());
                     pedido.excluir(item);
                 }
                 case 3 -> {
@@ -269,7 +281,7 @@ public class App {
                     }
                     }
             }
-            System.out.println("\n" + pedido.relatorio());
+            System.out.println("\n" + pedido.toString());
             return pedido;
         } 
 
@@ -281,7 +293,7 @@ public class App {
         public static String relatorioPedido(LinkedList<Pedido> todosOsPedidos, int idPedido){
             if(todosOsPedidos.size() > 0){
                 Pedido pedido = localizarPedido(todosOsPedidos, idPedido);
-                return pedido.relatorio();
+                return pedido.toString();
             }
             return "Pedido não encontrado";
         }
@@ -294,7 +306,7 @@ public class App {
             StringBuilder s = new StringBuilder();
             if(todosOsPedidos.size() > 0){
                 for(Pedido pedido : todosOsPedidos){
-                    s.append(pedido.relatorio() + "\n");
+                    s.append(pedido.toString() + "\n");
                     s.append("\n");
                 }
             } else {
@@ -308,7 +320,7 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
-        LinkedList<Pedido> todosOsPedidosAbertos = criarListaPedidosAbertos(todosOsPedidos);
+        // LinkedList<Pedido> todosOsPedidosAbertos = criarListaPedidosAbertos(todosOsPedidos);
 
         System.out.println(cabecalho());
         Pedido pedidoAtual = null;
@@ -326,17 +338,24 @@ public class App {
                     }
                     case 1 -> {
                         System.out.println("\n --- Criando um novo pedido ---");
+                        int escolhaEntrega = InputUtils.lerInt(menuEntrega());
+                        double distancia = 0;
+                        if(escolhaEntrega == 2){
+                            distancia = InputUtils.lerDouble("\nQual a distância até o local?: ");
+                        }
                         System.out.println(cardapio());
-                        abrirPedido(todosOsPedidos);
+                        System.out.println();
+                        abrirPedido(todosOsPedidos, escolhaEntrega, distancia);
                     }
                     case 2 -> {
                     
                     System.out.println("\n --- Alterando um pedido ---");
                     if(todosOsPedidos.size() > 0){
-                        System.out.println(relatorioTodosOsPedidos(todosOsPedidos));
+                        System.out.print(relatorioTodosOsPedidos(todosOsPedidos));
                         idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
-                        if(verificarPedidoAberto(todosOsPedidosAbertos, idPedidoAtual)){
+                        if(verificarPedidoAberto(todosOsPedidos, idPedidoAtual)){
                             alterarPedido(todosOsPedidos, idPedidoAtual);// alterar pedido (adicionar ou remover itens)
+                            continue;
                         }
                         Pedido pedido = localizarPedido(todosOsPedidos, idPedidoAtual);
                         System.out.println(String.format("O pedido %02d está %s",idPedidoAtual, pedido.definirStatus().toLowerCase()));

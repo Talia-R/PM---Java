@@ -14,6 +14,11 @@ public class InputUtils {
         return Integer.parseInt(entrada.nextLine());
     }
 
+    public static double lerDouble(String msg){
+        System.out.print(msg);
+        return Double.parseDouble(entrada.nextLine());
+    }
+
     /**
      * Lê uma string, mostrando uma mensagem antes da leitura.
      * @param msg mensagem a ser exibida antes da leitura.

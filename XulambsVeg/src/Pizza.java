@@ -127,8 +127,5 @@ public class Pizza {
             s.append(" | Total: " + moeda.format(precoFinal()));
             return s.toString();
     }
-
-    //a pizza vai saber oq vendeu a partir do relatorio
-    // comeca 
     
 }

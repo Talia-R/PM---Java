@@ -5,11 +5,20 @@ import java.util.LinkedList;
 
 public class Pedido {
     private static int ultimoPedido;
-    private LinkedList<Pizza> todasAsPizzas = new LinkedList<>();
+    protected LinkedList<Pizza> todasAsPizzas = new LinkedList<>();
     private LocalDate data;
+
+    protected double distancia;
 
     private int idPedido;
     private boolean aberto;
+
+    // public Pedido(double distancia){
+    //     idPedido = ++ultimoPedido;
+    //     data = LocalDate.now();
+    //     aberto = true;
+    //     this.distancia = distancia;
+    // }
 
     public Pedido(){
         idPedido = ++ultimoPedido;
@@ -29,7 +38,7 @@ public class Pedido {
      * Verifica se o pedido está aberto (aceitando adições)
      * @return se estiver aberto retorna true
      */
-    private boolean podeAdicionar(){
+    protected boolean podeAdicionar(){
         return aberto;
     }
 
@@ -118,6 +127,10 @@ public class Pedido {
         return aberto ? "Aberto" : "Fechado";
     }
 
+    private String setarModalidadeEntrega(){
+        return (distancia == 0) ? "Local" : "Delivery";
+    }
+
     /**
      * Mostra um relatorio do pedido.
      * Formato:
@@ -126,13 +139,14 @@ public class Pedido {
      * Ao final imprime o valor total do pedido.
      * @return
      */
-    public String relatorio(){
+    @Override
+    public String toString(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
         StringBuilder s = new StringBuilder();
         int qntItens = 1;
         String status = definirStatus();
 
-        s.append(String.format("#Pedido: %02d - (%s) | Status: %s", idPedido, data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), status));
+        s.append(String.format("#Pedido: %02d - (%s) | Status: %s | %s", idPedido, data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), status, setarModalidadeEntrega()));
 
         for(Pizza pizza : todasAsPizzas){
             s.append(String.format("\n%d) %s",qntItens, pizza.relatorio()));
@@ -142,5 +156,12 @@ public class Pedido {
         }
         s.append("\nTotal pedido: " + moeda.format(calcularPrecoFinal()));
         return s.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        Pedido outro = (Pedido)obj;
+
+        return idPedido == outro.idPedido;
     }
 }
