@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 
 public class PedidoTest {
     private LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
-    private Pedido p1 = new Pedido();
-    private Pedido p2 = new Pedido();
-    private Pedido p3 = new Pedido();
+    private Pedido p1 = new PedidoLocal();
+    private Pedido p2 = new PedidoLocal();
+    private Pedido p3 = new PedidoLocal();
 
     @BeforeEach
     void setup(){
