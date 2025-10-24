@@ -45,13 +45,13 @@ public class PedidoEntrega extends Pedido {
 
     @Override
     public double calcularPrecoFinal(){
-        return super.calcularPrecoFinal() + calcularValorFrete();
+        return super.valorItens() + calcularValorFrete();
     }
 
     @Override
     public String toString(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
-        return super.toString() + " (frete: " + moeda.format(calcularValorFrete()) + ")";
+        return super.notaBasePedido() + " (frete: " + moeda.format(calcularValorFrete()) + ")";
 
     }
 

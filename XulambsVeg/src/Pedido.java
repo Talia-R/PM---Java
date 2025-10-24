@@ -3,7 +3,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 
-public class Pedido {
+public abstract class Pedido {
     private static int ultimoPedido;
     protected LinkedList<Pizza> todasAsPizzas = new LinkedList<>();
     private LocalDate data;
@@ -103,13 +103,15 @@ public class Pedido {
      * Soma todas as pizzas inclusas dentro do pedido e retorna seu valor final
      * @return double contendo o valor de todas pizzas que foram inclusa no pedido.
      */
-    public double calcularPrecoFinal(){
+    public double valorItens(){
         double precoFinal = 0d;
         for(Pizza pizza : todasAsPizzas){
             precoFinal += pizza.getPrecoFinal();
         }
         return precoFinal;
     }
+
+    protected abstract double calcularPrecoFinal();
 
     /**
      * Cabeçalho de um pedido com ID e data
@@ -139,8 +141,7 @@ public class Pedido {
      * Ao final imprime o valor total do pedido.
      * @return
      */
-    @Override
-    public String toString(){
+    public String notaBasePedido(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
         StringBuilder s = new StringBuilder();
         int qntItens = 1;
@@ -150,8 +151,6 @@ public class Pedido {
 
         for(Pizza pizza : todasAsPizzas){
             s.append(String.format("\n%d) %s",qntItens, pizza.relatorio()));
-            // quebra de linha
-            //s.append("\n");
             qntItens++;
         }
         s.append("\nTotal pedido: " + moeda.format(calcularPrecoFinal()));

@@ -191,7 +191,7 @@ public class App {
          */
         public static Pedido abrirPedido(LinkedList<Pedido> todosOsPedidos, int modalidadePedido, double distancia){
             Pedido novoPedido = switch(modalidadePedido) {
-                case 1 -> novoPedido = new Pedido();
+                case 1 -> novoPedido = new PedidoLocal();
                 case 2 -> novoPedido = new PedidoEntrega(distancia);
                 default -> throw new IllegalArgumentException("Modalidade inválida");
             };
