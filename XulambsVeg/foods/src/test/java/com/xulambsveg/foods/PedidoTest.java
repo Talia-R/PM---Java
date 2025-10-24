@@ -1,9 +1,13 @@
+package com.xulambsveg.foods;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.LinkedList;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.xulambsveg.foods.Models.Pedido;
 
 public class PedidoTest {
     private LinkedList<Pedido> todosOsPedidos = new LinkedList<>();

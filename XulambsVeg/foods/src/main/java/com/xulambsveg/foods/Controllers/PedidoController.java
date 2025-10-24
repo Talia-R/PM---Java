@@ -1,23 +1,18 @@
 package com.xulambsveg.foods.Controllers;
 
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceUnit;
-import jakarta.persistence.TypedQuery;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xulambsveg.foods.DTO.PedidoDTO;
 import com.xulambsveg.foods.Models.Pedido;
 import com.xulambsveg.foods.Models.Pizza;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
