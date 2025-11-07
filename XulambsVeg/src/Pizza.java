@@ -110,7 +110,8 @@ public class Pizza {
      * Exibe uma nota descritiva da pizza com descrição dos ingredientes (caso tenha) e seu preço.
      * @return string com a descrição e preço da pizza
      */
-    public String relatorio(){
+    @Override
+    public String toString(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
         StringBuilder s = new StringBuilder();
         s.append(String.format("Pizza padrão no valor de: %s", moeda.format(getPrecoPadrao())));
