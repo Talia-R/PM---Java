@@ -51,7 +51,7 @@ public class PedidoEntrega extends Pedido {
     @Override
     public String toString(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
-        return super.notaBasePedido() + " (frete: " + moeda.format(calcularValorFrete()) + ")";
+        return super.toString() + " (frete: " + moeda.format(calcularValorFrete()) + ")";
 
     }
 

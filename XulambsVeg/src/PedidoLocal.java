@@ -16,6 +16,6 @@ public class PedidoLocal extends Pedido {
     @Override
     public String toString(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
-        return super.notaBasePedido() + " (taxa de serviço: " + moeda.format(valorServico()) + ")";
+        return super.toString() + " (taxa de serviço: " + moeda.format(valorServico()) + ")";
     }
 }

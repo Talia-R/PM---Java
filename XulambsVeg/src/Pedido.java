@@ -84,7 +84,7 @@ public abstract class Pedido {
         StringBuilder s = new StringBuilder();
         int qntPizzas = 1;
         for(Pizza pizza : todasAsPizzas){
-            s.append((qntPizzas++) + ") " + pizza.relatorio() + "\n");
+            s.append((qntPizzas++) + ") " + pizza.toString() + "\n");
         }
         return s.toString();
     }
@@ -141,7 +141,8 @@ public abstract class Pedido {
      * Ao final imprime o valor total do pedido.
      * @return
      */
-    public String notaBasePedido(){
+    @Override
+    public String toString(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
         StringBuilder s = new StringBuilder();
         int qntItens = 1;
@@ -150,7 +151,7 @@ public abstract class Pedido {
         s.append(String.format("#Pedido: %02d - (%s) | Status: %s | %s", idPedido, data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), status, setarModalidadeEntrega()));
 
         for(Pizza pizza : todasAsPizzas){
-            s.append(String.format("\n%d) %s",qntItens, pizza.relatorio()));
+            s.append(String.format("\n%d) %s",qntItens, pizza.toString()));
             qntItens++;
         }
         s.append("\nTotal pedido: " + moeda.format(calcularPrecoFinal()));
