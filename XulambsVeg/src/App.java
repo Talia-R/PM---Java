@@ -1,6 +1,14 @@
+
 import java.text.NumberFormat;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
+
+import models.EBordas;
+import models.InputUtils;
+import models.Pedido;
+import models.PedidoEntrega;
+import models.PedidoLocal;
+import models.Pizza;
 
 public class App {
     // static LinkedList<Pizza> pizzas = new LinkedList<>();
@@ -136,7 +144,7 @@ public class App {
          */
         public static String notaDeCompra(Pizza pizza){
             StringBuilder s = new StringBuilder();
-            System.out.println(pizza.relatorio());
+            System.out.println(pizza.toString());
             return s.toString();
         }
 
@@ -154,7 +162,7 @@ public class App {
             int posicaoPizza = InputUtils.lerInt("Qual pizza quer editar?: ");
             
             Pizza pizzaParaEdicao = pedidoEscolhido.encontrarPizza(posicaoPizza);
-            System.out.println(pizzaParaEdicao.relatorio());
+            System.out.println(pizzaParaEdicao.toString());
             return pizzaParaEdicao;
         }   
 

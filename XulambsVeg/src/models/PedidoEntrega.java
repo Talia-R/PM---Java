@@ -1,10 +1,11 @@
+package models;
 import java.text.NumberFormat;
 
 public class PedidoEntrega extends Pedido {
     private static int MAX_QNT_PIZZAS = 8;
 
-    protected static int[] DISTANCIAS = {4,8};
-    protected static double[] VALOR_FRETE = {0,5,8};
+    private static int[] DISTANCIAS = {4,8};
+    private static double[] VALOR_FRETE = {0,5,8};
 
     public PedidoEntrega(double distancia){
         super();
@@ -34,7 +35,7 @@ public class PedidoEntrega extends Pedido {
      * Verificar se a lista de pizzas atingiu o valor máximo.
      * @return retorna false caso não tenha atingido.
      */
-    protected boolean menorMaxPizza(){
+    private boolean menorMaxPizza(){
         return todasAsPizzas.size() < MAX_QNT_PIZZAS;
     }
 
