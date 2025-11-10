@@ -5,7 +5,7 @@ export function App() {
   return (
     <>
       <form action="">
-        <h3>O que vai comer?</h3>
+        <h3>Menu</h3>
         <a href="">Ex1</a>
         <a href="">Ex2</a>
         <a href="">Ex3</a>
