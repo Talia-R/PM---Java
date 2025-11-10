@@ -1,7 +1,7 @@
 package models;
 import java.text.NumberFormat;
 
-public class Pizza {
+public class Pizza implements IComida {
     private static final int MAX_INGREDIENTES_ADICIONAIS = 8;
     private static final double CUSTO_ADICIONAIS = 5d;
     private static double precoBase = 29d;
@@ -87,7 +87,7 @@ public class Pizza {
      * Calcula o valor dos adicionais da pizza.
      * @return double com a soma dos valores adicionais
      */
-    private double calcularPrecoAdicional(){
+    public double calcularPrecoAdicional(){
         return qntAdicionaisAtual * CUSTO_ADICIONAIS;
     }
 
@@ -95,7 +95,7 @@ public class Pizza {
      * Calcula o valor final da pizza. Considera o valor padrão, os valores dos adicionais e o valor da borda
      * @return double com a soma do valor padrão e adicionais
      */
-    private double precoFinal(){
+    public double precoFinal(){
         return precoBase + calcularPrecoAdicional() + borda.getPrecoBorda();
     }
 
