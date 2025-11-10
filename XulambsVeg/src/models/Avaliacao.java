@@ -1,35 +1,35 @@
 package models;
 
 public class Avaliacao {
-    private String descricao;
+    private String comentario;
     private EEstrelas estrela;
 
 
-    public Avaliacao(EEstrelas estrela, String descricao){
-        if(descricao.isBlank())
-            throw new IllegalArgumentException("Descrição não pode ser vazia");
-        if(descricao.length() <= 3)
-            throw new IllegalArgumentException("Descrição deve ter mais de 5 caracters");
+    public Avaliacao(EEstrelas estrela, String comentario){
+        if(comentario.isBlank())
+            throw new IllegalArgumentException("Comentário não pode ser vazia");
+        if(comentario.length() <= 3)
+            throw new IllegalArgumentException("Comentário deve ter mais de 5 caracters");
             
         this.estrela = estrela;
-        this.descricao = formatarDescricao(descricao);
+        this.comentario = formatarDescricao(comentario);
     }
 
     /**
-     * Formata a descrição retirando espaços em brancos e deixando os caracters em letra minúscula.
-     * @param descricao descricao inserida.
+     * Formata a comentário retirando espaços em brancos e deixando os caracters em letra minúscula.
+     * @param comentario descricao inserida.
      * @return descricao formatada.
      */
-    private String formatarDescricao(String descricao){
-        return descricao.trim().toLowerCase();
+    private String formatarDescricao(String comentario){
+        return comentario.trim().toLowerCase();
     }
 
     /**
-     * Edita uma descrição existente.
-     * @param novaDescricao nova descrição.
+     * Edita uma comentário existente.
+     * @param novoComentario nova comentário.
      */
-    public void editarDescricao(String novaDescricao){
-        descricao = novaDescricao;
+    public void editarDescricao(String novoComentario){
+        comentario = novoComentario;
     }
 
     /**
@@ -37,19 +37,20 @@ public class Avaliacao {
      * Formato:
      * Quantidade de estrelas dadas: ★
      * Quantidade de estrelas total: ☆
-     * Descrição feita pelo cliente.
+     * Comentário feita pelo cliente.
      */
     @Override
     public String toString(){
         StringBuilder s = new StringBuilder();
         int estrelasDadas = estrela.getEstrelas();
-        int max_Estrelas = EEstrelas.getMaxEstrelas();
+        // int max_Estrelas = EEstrelas.getMaxEstrelas();
         s.append("\n");
-        s.append("\u2605".repeat(estrelasDadas));
-        if(estrelasDadas != max_Estrelas){
-            s.append("\u2606".repeat(max_Estrelas - estrelasDadas));
-        }
-        s.append("\n" + descricao);
+        s.append(" Estrelas: " + estrelasDadas);
+        // if(estrelasDadas != max_Estrelas){
+
+        //     s.append("\u2606".repeat(max_Estrelas - estrelasDadas));
+        // }
+        s.append("\nCometário: " + comentario);
         return s.toString();
     }
 }
