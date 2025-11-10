@@ -388,9 +388,19 @@ public class App {
                         if(idPedidoAtual == pedido.getIdPedido()){
                             pedidoAtual = pedido;
                         }
-                    }   
+                    }
+                    int avaliacao = InputUtils.lerInt("\nGostaria de avaliar seu pedido?\n 1) sim | 2) Não ");
+                    if(avaliacao == 1){
+                        int estrelas = 0;
+                        while(estrelas <= 0 || estrelas > 5)
+                            estrelas = InputUtils.lerInt("Quantas estrelas? (1 a 5): ");
+                        String descricao = InputUtils.lerString("Escreva o que achou do pedido: ");
+                        pedidoAtual.avaliarPedido(estrelas, descricao);
+                        System.out.print("\nPedido avaliado: ");
+                        System.out.print(pedidoAtual.getAvaliacao());
+                    }  
                     pedidoAtual.fecharPedido();
-                    System.out.println(String.format("Pedido %d fechado.", idPedidoAtual));
+                    System.out.println(String.format("\nPedido %d fechado.", idPedidoAtual));
                     continue;
                 } 
                 System.out.println("Não há pedidos registrados");    

@@ -42,11 +42,12 @@ public class Avaliacao {
     @Override
     public String toString(){
         StringBuilder s = new StringBuilder();
-        int totalEstrelas = estrela.getEstrelas();
+        int estrelasDadas = estrela.getEstrelas();
         int max_Estrelas = EEstrelas.getMaxEstrelas();
-        s.append("\n★".repeat(totalEstrelas));
-        if(totalEstrelas != max_Estrelas){
-            s.append("☆".repeat(totalEstrelas - max_Estrelas));
+        s.append("\n");
+        s.append("\u2605".repeat(estrelasDadas));
+        if(estrelasDadas != max_Estrelas){
+            s.append("\u2606".repeat(max_Estrelas - estrelasDadas));
         }
         s.append("\n" + descricao);
         return s.toString();

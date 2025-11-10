@@ -14,6 +14,8 @@ public abstract class Pedido {
     private int idPedido;
     private boolean aberto;
 
+    private Avaliacao avaliacao;
+
     // public Pedido(double distancia){
     //     idPedido = ++ultimoPedido;
     //     data = LocalDate.now();
@@ -132,6 +134,16 @@ public abstract class Pedido {
 
     private String setarModalidadeEntrega(){
         return (distancia == 0) ? "Local" : "Delivery";
+    }
+
+    public Avaliacao avaliarPedido(int indexQntEstrelas, String descricao){
+        EEstrelas estrelas = EEstrelas.values()[indexQntEstrelas - 1];
+        this.avaliacao = new Avaliacao(estrelas, descricao);
+        return avaliacao;
+    }
+
+    public Avaliacao getAvaliacao(){
+        return avaliacao;
     }
 
     /**
