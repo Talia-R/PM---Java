@@ -6,10 +6,12 @@ export function App() {
     <>
       <form action="">
         <h3>Menu</h3>
-        <a href="">Ex1</a>
-        <a href="">Ex2</a>
-        <a href="">Ex3</a>
-
+        <section>
+          <a href="">Ex1</a>
+          <a href="">Ex2</a>
+          <a href="">Ex3</a>
+        </section>
+        
         {/* sanduiche */}
         <legend>Borda</legend>
         <select name="" id="">
