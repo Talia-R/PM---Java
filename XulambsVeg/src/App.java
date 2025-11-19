@@ -52,76 +52,64 @@ public class App {
         System.out.flush();
     }
 
-    /**
-     * Exibe o menu de opções possiveis no sistema
-     * @return menu com opções numeradas
-     */
-    public static String menu(){
-        StringBuilder s = new StringBuilder();
-        s.append(detalheDivisorTraco());
-        s.append("\n0) Sair");
-        s.append("\n1) Abrir pedido");
-        s.append("\n2) Alterar pedido");
-        s.append("\n3) Relatório pedido");
-        s.append("\n4) Encerrar pedido");
-        s.append("\n5) Relatório de todos os pedidos");
-        s.append("\n");
-        s.append(detalheDivisorTraco());
-        
-        return s.toString();
-    }
-
-    /**
-     * Exibe o cardápio enumerado
-     * @return cardápio com itens enumerados.
-     */
-    public static String menuPizzas(){
-        StringBuilder s = new StringBuilder();
-        s.append(detalheDivisorTraco());
-        s.append("\n");
-        s.append("Cardápio: ");
-        s.append("\nPizza Padrão (borda comum e sem adicionais): " + moeda.format(Pizza.getPrecoPadrao()));
-        s.append("\nAdicionais: " + moeda.format(Pizza.getPrecoAdicionais()));
-        s.append("\n" + cardapioBordas());
-        s.append("\n");
-        s.append(detalheDivisorTraco());
-        
-        return s.toString();
-    }
-
-    public static String menuEntrega(){
-        StringBuilder s = new StringBuilder();
-        s.append("\n1) Local | 2) Delivery : ");
-        return s.toString();
-    }
-
-    /**
-     * Exibe um cardápio com os valores das bordas.
-     * @return string com a descrição e preço das bordas.
-     */
-    public static String cardapioBordas(){
-        StringBuilder s = new StringBuilder();
-        EBordas[] todasAsBordas = EBordas.values();
-        int qntBordas = 1;
-        s.append("\n --- Bordas ---\n");
-        for(EBordas borda : todasAsBordas){
-            s.append(String.format("%d) %s \n", qntBordas++, borda.getDescricaoBorda()));
+    //#region Menu/Cardapios
+        /**
+         * Exibe o menu de opções possiveis no sistema
+         * @return menu com opções numeradas
+         */
+        public static String menu(){
+            StringBuilder s = new StringBuilder();
+            s.append(detalheDivisorTraco());
+            s.append("\n0) Sair");
+            s.append("\n1) Abrir pedido");
+            s.append("\n2) Alterar pedido");
+            s.append("\n3) Relatório pedido");
+            s.append("\n4) Encerrar pedido");
+            s.append("\n5) Relatório de todos os pedidos");
+            s.append("\n");
+            s.append(detalheDivisorTraco());
+            
+            return s.toString();
         }
 
-        return s.toString();
-    }
-
-    //#region Pizza
         /**
-         * Cria um objeto pizza e o adiciona na lista de Pizzas.
-         * Exibe o relatorio (nota de compra).
+         * Exibe o cardápio enumerado
+         * @return cardápio com itens enumerados.
          */
-        public static Pizza adicionarPizza(){
-            System.out.println(menuPizzas());
-            Pizza novaPizza = new Pizza();
-            montarPizza(novaPizza);
-            System.out.println(notaDeCompra(novaPizza));
-            return novaPizza;
+        public static String menuPizzas(){
+            StringBuilder s = new StringBuilder();
+            s.append(detalheDivisorTraco());
+            s.append("\n");
+            s.append("Cardápio: ");
+            s.append("\nPizza Padrão (borda comum e sem adicionais): " + moeda.format(Pizza.getPrecoPadrao()));
+            s.append("\nAdicionais: " + moeda.format(Pizza.getPrecoAdicionais()));
+            s.append("\n" + cardapioBordas());
+            s.append("\n");
+            s.append(detalheDivisorTraco());
+            
+            return s.toString();
+        }
+
+        public static String menuEntrega(){
+            StringBuilder s = new StringBuilder();
+            s.append("\n1) Local | 2) Delivery : ");
+            return s.toString();
+        }
+
+        /**
+         * Exibe um cardápio com os valores das bordas.
+         * @return string com a descrição e preço das bordas.
+         */
+        public static String cardapioBordas(){
+            StringBuilder s = new StringBuilder();
+            EBordas[] todasAsBordas = EBordas.values();
+            int qntBordas = 1;
+            s.append("\n --- Bordas ---\n");
+            for(EBordas borda : todasAsBordas){
+                s.append(String.format("%d) %s \n", qntBordas++, borda.getDescricaoBorda()));
+            }
+
+            return s.toString();
         }
 
         public static String menuBebidas(){
@@ -145,6 +133,21 @@ public class App {
             }
             return s.toString();
         }
+    //#endregion
+
+    //#region Pizza
+        /**
+         * Cria um objeto pizza e o adiciona na lista de Pizzas.
+         * Exibe o relatorio (nota de compra).
+         */
+        public static Pizza adicionarPizza(){
+            System.out.println(menuPizzas());
+            Pizza novaPizza = new Pizza();
+            montarPizza(novaPizza);
+            System.out.println(notaDeCompra(novaPizza));
+            return novaPizza;
+        }
+
 
         public static EBebidas adicionarBebida(){
             EBebidas[] list = EBebidas.values();

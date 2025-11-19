@@ -4,7 +4,7 @@ import java.text.NumberFormat;
 
 public enum ESobremesas implements IComida{
     BRIGADEIRO("Brigadeiro", 5),
-    PUDIM("pudim", 10),
+    PUDIM("Pudim", 10),
     DOCE_DE_LEITE("Doce de leite", 7.5);
 
     private String descricao;
