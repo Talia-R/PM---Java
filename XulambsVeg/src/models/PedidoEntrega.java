@@ -36,7 +36,7 @@ public class PedidoEntrega extends Pedido {
      * @return retorna false caso não tenha atingido.
      */
     private boolean menorMaxPizza(){
-        return todasAsPizzas.size() < MAX_QNT_PIZZAS;
+        return comidas.size() < MAX_QNT_PIZZAS;
     }
 
     @Override

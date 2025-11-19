@@ -3,7 +3,10 @@ import java.text.NumberFormat;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
 
+import models.EBebidas;
 import models.EBordas;
+import models.ESobremesas;
+import models.IComida;
 import models.InputUtils;
 import models.Pedido;
 import models.PedidoEntrega;
@@ -72,7 +75,7 @@ public class App {
      * Exibe o cardápio enumerado
      * @return cardápio com itens enumerados.
      */
-    public static String cardapio(){
+    public static String menuPizzas(){
         StringBuilder s = new StringBuilder();
         s.append(detalheDivisorTraco());
         s.append("\n");
@@ -113,13 +116,60 @@ public class App {
          * Cria um objeto pizza e o adiciona na lista de Pizzas.
          * Exibe o relatorio (nota de compra).
          */
-        public static Pizza comprarPizza(){
+        public static Pizza adicionarPizza(){
+            System.out.println(menuPizzas());
             Pizza novaPizza = new Pizza();
             montarPizza(novaPizza);
-            // pizzas.add(novaPizza);
             System.out.println(notaDeCompra(novaPizza));
-            // System.out.println(detalheDivisorTraco());
             return novaPizza;
+        }
+
+        public static String menuBebidas(){
+            EBebidas[] list = EBebidas.values();
+
+            StringBuilder s = new StringBuilder();
+            int qnt = 0;
+            for(EBebidas b : list){
+                s.append(String.format("\n %d) %s", ++qnt, b));
+            }
+            return s.toString();
+        }
+
+        public static String menuSobremesas(){
+            ESobremesas[] list = ESobremesas.values();
+
+            StringBuilder s = new StringBuilder();
+            int qnt = 0;
+            for(ESobremesas b : list){
+                s.append(String.format("\n %d) %s", ++qnt, b));
+            }
+            return s.toString();
+        }
+
+        public static EBebidas adicionarBebida(){
+            EBebidas[] list = EBebidas.values();
+            System.out.print(menuBebidas());
+            int bebida = InputUtils.lerInt("\nAdicionar: ");
+            return list[bebida - 1];
+        }
+
+        public static ESobremesas adicionarSobremesa(){
+            ESobremesas[] list = ESobremesas.values();
+            System.out.print(menuSobremesas());
+            int sobremesa = InputUtils.lerInt("\nAdicionar: ");
+            return list[sobremesa - 1];
+        }
+
+        public static IComida comprarComida(){
+            IComida novaComida = null;
+            int indexComida = InputUtils.lerInt("\n1) Pizzas | 2) Bebidas | 3) Sobremesa ");
+            switch(indexComida){
+                case 1 -> novaComida = adicionarPizza();
+                case 2 -> novaComida = adicionarBebida();
+                case 3 -> novaComida = adicionarSobremesa();
+            }
+
+            return novaComida;
         }
 
         /**
@@ -132,7 +182,7 @@ public class App {
                                                     Pizza.getMaxIngredientesAdicionais() +
                                                     ")?: ");
 
-            pizza.editarQntIngredPizza(1, qntAdicionais);
+            pizza.editarQnt(1, qntAdicionais);
             int indexBorda = InputUtils.lerInt("Escolha a borda: ");
             pizza.adicionarBorda(indexBorda);
         }
@@ -155,13 +205,13 @@ public class App {
          * @param pedidoEscolhido O pedido que contém a pizza a ser editada.
          * @return A pizza selecionada pelo usuário para edição.
          */
-        private static Pizza prepararPizzaParaEdicao(Pedido pedidoEscolhido){
+        private static IComida prepararComidaParaEdicao(Pedido pedidoEscolhido){
             System.out.println(pedidoEscolhido.cabecalhoPedido());
-            System.out.print(pedidoEscolhido.relatorioTodasPizzas());
+            System.out.print(pedidoEscolhido.toString());
             
             int posicaoPizza = InputUtils.lerInt("Qual pizza quer editar?: ");
             
-            Pizza pizzaParaEdicao = pedidoEscolhido.encontrarPizza(posicaoPizza);
+            IComida pizzaParaEdicao = pedidoEscolhido.encontrarComida(posicaoPizza);
             System.out.println(pizzaParaEdicao.toString());
             return pizzaParaEdicao;
         }   
@@ -177,7 +227,7 @@ public class App {
          */
         private static void alterarQntIngred(Pizza pizzaParaEdicao, int escolha){
             int novaQntIngredientes = InputUtils.lerInt("Quantos ingredientes quer incluir/remover?: ");
-            pizzaParaEdicao.editarQntIngredPizza(escolha, novaQntIngredientes);
+            pizzaParaEdicao.editarQnt(escolha, novaQntIngredientes);
         }
 
         /**
@@ -205,7 +255,7 @@ public class App {
             };
 
             System.out.print(novoPedido.cabecalhoPedido());
-            novoPedido.adicionar(comprarPizza());
+            novoPedido.adicionar(comprarComida());
             todosOsPedidos.add(novoPedido);
             return novoPedido;
         }
@@ -267,23 +317,28 @@ public class App {
             Pedido pedido = localizarPedido(todosOsPedidos, idPedidoAtual);
             System.out.println(pedido.toString());
 
-            int opcaoEdicao = InputUtils.lerInt("\n 1) Adicionar Pizzas | 2) Remover Pizzas | 3) Editar pizzas: ");
+            int opcaoEdicao = InputUtils.lerInt("\n 1) Adicionar Comida | 2) Remover Pizzas | 3) Editar pizzas: ");
 
             switch(opcaoEdicao){
-                case 1 -> pedido.adicionar(comprarPizza());
+                // case 1 -> pedido.adicionar(adicionarPizza());
+                case 1 -> pedido.adicionar(comprarComida());
                 case 2 -> {
                     int item = InputUtils.lerInt("\nQual item irá excluir?: ");
                     System.out.println(pedido.toString());
                     pedido.excluir(item);
                 }
                 case 3 -> {
-                    Pizza pizzaParaEdicao = prepararPizzaParaEdicao(pedido);
+                    IComida comidaParaEdicao = prepararComidaParaEdicao(pedido);
                     int acao = InputUtils.lerInt("1) Incluir Ingredientes | 2) Remover Ingredientes | 3) Trocar Borda : ");
 
                     switch(acao) {
-                        case 1,2 -> alterarQntIngred(pizzaParaEdicao, acao);
+                        case 1,2 -> {
+                            Pizza pizzaParaEdicao = (Pizza) comidaParaEdicao;
+                            alterarQntIngred(pizzaParaEdicao, acao);
+                        }
                         case 3 -> {                    
                             System.out.println(cardapioBordas());
+                            Pizza pizzaParaEdicao = (Pizza) comidaParaEdicao;
                             alterarBorda(pizzaParaEdicao);
                         }
                     }
@@ -328,7 +383,6 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
-        // LinkedList<Pedido> todosOsPedidosAbertos = criarListaPedidosAbertos(todosOsPedidos);
 
         System.out.println(cabecalho());
         Pedido pedidoAtual = null;
@@ -351,8 +405,6 @@ public class App {
                         if(escolhaEntrega == 2){
                             distancia = InputUtils.lerDouble("\nQual a distância até o local?: ");
                         }
-                        System.out.println(cardapio());
-                        System.out.println();
                         abrirPedido(todosOsPedidos, escolhaEntrega, distancia);
                     }
                     case 2 -> {

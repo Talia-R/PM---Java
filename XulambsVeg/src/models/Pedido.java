@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 public abstract class Pedido {
     private static int ultimoPedido;
-    protected LinkedList<Pizza> todasAsPizzas = new LinkedList<>();
+    protected LinkedList<IComida> comidas = new LinkedList<>();
     private LocalDate data;
 
     protected double distancia;
@@ -15,13 +15,6 @@ public abstract class Pedido {
     private boolean aberto;
 
     private Avaliacao avaliacao;
-
-    // public Pedido(double distancia){
-    //     idPedido = ++ultimoPedido;
-    //     data = LocalDate.now();
-    //     aberto = true;
-    //     this.distancia = distancia;
-    // }
 
     public Pedido(){
         idPedido = ++ultimoPedido;
@@ -46,70 +39,70 @@ public abstract class Pedido {
     }
 
     /**
-     * Adiciona uma pizza no pedido.
-     * @param pizza pizza a ser adicionada no pedido.
-     * @return inteiro com a quantidade de pizza já adicionadas após inclusão.
+     * Adiciona uma comida no pedido.
+     * @param comida comida a ser adicionada no pedido.
+     * @return inteiro com a quantidade de comida já adicionadas após inclusão.
      */
-    public int adicionar(Pizza pizza){
+    public int adicionar(IComida comida){
         if(podeAdicionar()){   
-            todasAsPizzas.add(pizza);
+            comidas.add(comida);
         }
-        return todasAsPizzas.size();
+        return comidas.size();
     }
 
     /**
-     * Exclui uma pizza no pedido se ela não for a única pizza existente
-     * @param pizza pizza a ser excluida do pedido.
-     * @return inteiro com a quantidade de pizza existentes após exclusão
+     * Exclui uma comida no pedido se ela não for a única comida existente
+     * @param comida comida a ser excluida do pedido.
+     * @return inteiro com a quantidade de comida existentes após exclusão
      */
-    public int excluir(int posicaoPizza){
-        if(todasAsPizzas.size() > 0){ 
-            Pizza pizza = todasAsPizzas.get(posicaoPizza - 1);
-            todasAsPizzas.remove(pizza);
+    public int excluir(int posicaoComida){
+        if(comidas.size() > 0){ 
+            IComida comida = comidas.get(posicaoComida - 1);
+            comidas.remove(comida);
         }
-        return todasAsPizzas.size();
+        return comidas.size();
     }
 
     /**
      * Fecha um pedido. 
-     * Verifica se o pedido tem pelo menos uma pizza adicionada. Se sim o pedido é fechado, se não nada acontece.
+     * Verifica se o pedido tem pelo menos uma comida adicionada. Se sim o pedido é fechado, se não nada acontece.
      */
     public void fecharPedido(){
-        if(todasAsPizzas.size() > 0)
+        if(comidas.size() > 0)
             aberto = false;
     }
 
     /**
-     * Faz um relatório de todas as pizzas existentes na lista.
-     * @return String com relaório de todas as pizzas.
+     * Faz um relatório de todas as comidas existentes na lista.
+     * @return String com relaório de todas as comidas.
      */
-    public String relatorioTodasPizzas(){
+    public String relatorioTodasComidas(){
         StringBuilder s = new StringBuilder();
-        int qntPizzas = 1;
-        for(Pizza pizza : todasAsPizzas){
-            s.append((qntPizzas++) + ") " + pizza.toString() + "\n");
+        int qntComidas = 1;
+        for(IComida comida : comidas){
+            s.append((qntComidas++) + ") " + comida.toString() + "\n");
         }
         return s.toString();
     }
 
     /**
-     * Encontra uma pizza na lista de todas a pizzas existentes dentro de um pedido.
-     * @param indexPizza index da pizza a ser encontrada na lista;
-     * @return pizza procurada.
+     * Encontra uma comida na lista de todas a comidas existentes dentro de um pedido.
+     * @param indexComida index da comida a ser encontrada na lista;
+     * @return comida procurada.
      */
-    public Pizza encontrarPizza(int indexPizza){
-        return todasAsPizzas.get(indexPizza - 1);
+    public IComida encontrarComida(int indexComida){
+        return comidas.get(indexComida - 1);
     }
 
     /**
      * Calcula o valor final do pedido. 
-     * Soma todas as pizzas inclusas dentro do pedido e retorna seu valor final
-     * @return double contendo o valor de todas pizzas que foram inclusa no pedido.
+     * Soma todas as comidas inclusas dentro do pedido e retorna seu valor final
+     * @return double contendo o valor de todas comidas que foram inclusa no pedido.
      */
     public double valorItens(){
         double precoFinal = 0d;
-        for(Pizza pizza : todasAsPizzas){
-            precoFinal += pizza.getPrecoFinal();
+        for(IComida comida : comidas){
+            precoFinal += comida.precoFinal();
         }
         return precoFinal;
     }
@@ -150,7 +143,7 @@ public abstract class Pedido {
      * Mostra um relatorio do pedido.
      * Formato:
      * idPedido - data.
-     * x) Pizza descrição.
+     * x) Comida descrição.
      * Ao final imprime o valor total do pedido.
      * @return
      */
@@ -163,8 +156,8 @@ public abstract class Pedido {
 
         s.append(String.format("#Pedido: %02d - (%s) | Status: %s | %s", idPedido, data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), status, setarModalidadeEntrega()));
 
-        for(Pizza pizza : todasAsPizzas){
-            s.append(String.format("\n%d) %s",qntItens, pizza.toString()));
+        for(IComida comida : comidas){
+            s.append(String.format("\n%d) %s",qntItens, comida.toString()));
             qntItens++;
         }
         s.append("\nTotal pedido: " + moeda.format(calcularPrecoFinal()));
