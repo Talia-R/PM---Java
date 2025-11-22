@@ -68,6 +68,7 @@ public class App {
             s.append("\n3) Relatório pedido");
             s.append("\n4) Encerrar pedido");
             s.append("\n5) Relatório de todos os pedidos");
+            s.append("\n6) Relatório de todos os clientes");
             s.append("\n");
             s.append(detalheDivisorTraco());
             
