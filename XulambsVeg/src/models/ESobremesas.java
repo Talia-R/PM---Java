@@ -15,7 +15,7 @@ public enum ESobremesas implements IComida{
         this.preco = preco;
     }
 
-    private String getDescricao(){
+    public String getDescricao(){
         return descricao;
     }
 
