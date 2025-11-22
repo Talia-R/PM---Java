@@ -2,7 +2,9 @@
 import java.text.NumberFormat;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
+import java.util.List;
 
+import models.Cliente;
 import models.EBebidas;
 import models.EBordas;
 import models.ESobremesas;
@@ -384,8 +386,31 @@ public class App {
 
     //#endregion
 
+    //#region Cliente
+        private static Cliente localizarCliente(List<Cliente> clientes, int id){
+            Cliente procurado = null;
+            for(Cliente c : clientes){
+                procurado = c.hashCode() == id ? c : null;
+            }
+            return procurado;
+        }
+
+        private static Cliente criarCliente(String nome){  
+             return new Cliente(nome);
+        }
+
+        private static String relatorioClientes(List<Cliente> clientes){
+            StringBuilder s = new StringBuilder();
+            for (Cliente cliente : clientes) {
+                s.append(cliente.relatorioPedidos());
+                s.append("\n" + detalheDivisorTraco());
+            }
+            return s.toString();
+        }
+    //#endregion
     public static void main(String[] args) throws Exception {
         LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
+        LinkedList<Cliente> clientes = new LinkedList<>();
 
         System.out.println(cabecalho());
         Pedido pedidoAtual = null;
@@ -408,7 +433,17 @@ public class App {
                         if(escolhaEntrega == 2){
                             distancia = InputUtils.lerDouble("\nQual a distância até o local?: ");
                         }
-                        abrirPedido(todosOsPedidos, escolhaEntrega, distancia);
+                        int idCliente = InputUtils.lerInt("Digite o id do cliente: ");
+                        Cliente cliente = localizarCliente(clientes, idCliente);
+                        if(cliente == null){
+                            limparTela();
+                            System.out.println("\nCliente não encontrado.\n\n---Criando novo cliente---");
+                            String nomeCliente = InputUtils.lerString("Digite o nome do cliente: ");
+                            cliente = criarCliente(nomeCliente);
+                            clientes.add(cliente);
+                        }
+                        cliente.registrarPedido(abrirPedido(todosOsPedidos, escolhaEntrega, distancia));
+                        
                     }
                     case 2 -> {
                     
@@ -461,6 +496,7 @@ public class App {
                 System.out.println("Não há pedidos registrados");    
                 }
                     case 5 -> System.out.print(relatorioTodosOsPedidos(todosOsPedidos));
+                    case 6 -> System.out.print(relatorioClientes(clientes));
                 }
                 
             } catch (NullPointerException npe){

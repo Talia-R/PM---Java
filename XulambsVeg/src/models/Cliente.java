@@ -40,7 +40,12 @@ public class Cliente {
 
     @Override
     public String toString(){
-        return String.format("%s | (#%d)", nome, id);
+        return String.format("Nome: %s | ID: #%02d", nome, id);
+    }
+
+    @Override
+    public int hashCode(){
+        return id;
     }
 
     public String relatorioPedidos(){

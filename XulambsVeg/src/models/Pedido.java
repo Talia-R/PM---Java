@@ -154,7 +154,7 @@ public abstract class Pedido {
         int qntItens = 1;
         String status = definirStatus();
 
-        s.append(String.format("#Pedido: %02d - (%s) | Status: %s | %s", idPedido, data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), status, setarModalidadeEntrega()));
+        s.append(String.format("\n#Pedido: %02d - (%s) | Status: %s | %s", idPedido, data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), status, setarModalidadeEntrega()));
 
         for(IComida comida : comidas){
             s.append(String.format("\n%d) %s",qntItens, comida.toString()));
