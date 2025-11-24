@@ -1,8 +1,13 @@
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import models.Cliente;
 import models.EBebidas;
@@ -19,7 +24,9 @@ public class App {
     // static LinkedList<Pizza> pizzas = new LinkedList<>();
     // static LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
     static NumberFormat moeda = NumberFormat.getCurrencyInstance();
-
+    static LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
+    static LinkedList<Cliente> clientes = new LinkedList<>();
+    // static Map<Integer, Cliente> clientes;
     /**
      * Retorna uma string formada pela repetição do divisor informado.
      * @param divisor o texto que será repetido
@@ -408,11 +415,41 @@ public class App {
             }
             return s.toString();
         }
-    //#endregion
-    public static void main(String[] args) throws Exception {
-        LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
-        LinkedList<Cliente> clientes = new LinkedList<>();
 
+        static void gerarClientes(){
+            Cliente novo = new Cliente("Anônimo");
+            clientes.add(novo);
+            try{
+                Path caminho = Path.of("src","Clientes.txt");
+                List<String> nomes = Files.readAllLines(caminho, Charset.forName("UTF-8"));
+                for(String nome : nomes){
+                    novo = new Cliente(nome);
+                    clientes.add(novo);
+                }
+            } catch(IOException exception){
+                System.out.println("Problema na leitura do arquivo. Sistema iniciado somente com cliente anônimo.");
+            }
+        }
+
+        static void gerarPedidos(){
+            
+        }
+
+    static void config() {
+        gerarClientes();
+    }
+    //#endregion
+   
+    //#region Fidelidade
+    private static void atualizarFidelidade(){
+        
+    }
+   //#endregion
+    public static void main(String[] args) throws Exception {
+        // LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
+        // LinkedList<Cliente> clientes = new LinkedList<>();
+        config();
+        
         System.out.println(cabecalho());
         Pedido pedidoAtual = null;
         int idPedidoAtual = 0;

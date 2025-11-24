@@ -11,7 +11,7 @@ public class PedidoLocal extends Pedido {
 
     @Override
     public double calcularPrecoFinal(){
-        return super.valorItens() + valorServico();
+        return (super.valorItens() + valorServico()) - desconto;
     }
 
     @Override

@@ -3,10 +3,11 @@ package models;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Cliente {
+public class Cliente{
     private static int ultimoID;
     private int id;
     private String nome;
+    private IFidelidade categoria;
     private List<Pedido> pedidos;
 
     public Cliente(String nome){
@@ -18,6 +19,11 @@ public class Cliente {
         this.nome = nome.trim();
 
         pedidos = new LinkedList<>();
+        categoria = new XulambsJunior();
+    }
+
+    public void atualizaCategoria(){
+        categoria = IFidelidade.definirCategoria(pedidos);
     }
 
     public int registrarPedido(Pedido novoPedido){
@@ -40,7 +46,7 @@ public class Cliente {
 
     @Override
     public String toString(){
-        return String.format("Nome: %s | ID: #%02d", nome, id);
+        return String.format("Nome: %s | ID: #%02d | Categoria: %s", nome, id, categoria.toString());
     }
 
     @Override

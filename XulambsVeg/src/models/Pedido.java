@@ -16,6 +16,8 @@ public abstract class Pedido {
 
     private Avaliacao avaliacao;
 
+    protected double desconto;
+
     public Pedido(){
         idPedido = ++ultimoPedido;
         data = LocalDate.now();
@@ -137,6 +139,11 @@ public abstract class Pedido {
 
     public Avaliacao getAvaliacao(){
         return avaliacao;
+    }
+
+    public double aplicarDesconto(double valor){
+        this.desconto = valor;
+        return desconto;
     }
 
     /**

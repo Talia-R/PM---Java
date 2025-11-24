@@ -46,7 +46,7 @@ public class PedidoEntrega extends Pedido {
 
     @Override
     public double calcularPrecoFinal(){
-        return super.valorItens() + calcularValorFrete();
+        return (super.valorItens() + calcularValorFrete()) - desconto;
     }
 
     @Override
