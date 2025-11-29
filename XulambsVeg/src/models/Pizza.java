@@ -66,7 +66,7 @@ public class Pizza implements IComida {
      * @return preço da borda
      */
     public void adicionarBorda(int indexBorda){
-        this.borda = EBordas.values()[indexBorda - 1];
+        this.borda = EBordas.values()[indexBorda];
         // return borda.getPrecoBorda();
     }
 

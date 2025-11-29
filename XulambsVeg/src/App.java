@@ -8,6 +8,7 @@ import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import models.Cliente;
 import models.EBebidas;
@@ -70,12 +71,15 @@ public class App {
             StringBuilder s = new StringBuilder();
             s.append(detalheDivisorTraco());
             s.append("\n0) Sair");
-            s.append("\n1) Abrir pedido");
-            s.append("\n2) Alterar pedido");
-            s.append("\n3) Relatório pedido");
-            s.append("\n4) Encerrar pedido");
-            s.append("\n5) Relatório de todos os pedidos");
-            s.append("\n6) Relatório de todos os clientes");
+            s.append("\n1) Atualizar fidelidade");
+            s.append("\n2) Abrir pedido");
+            s.append("\n3) Alterar pedido");
+            s.append("\n4) Relatório pedido");
+            s.append("\n5) Encerrar pedido");
+            s.append("\n6) Relatório de todos os pedidos");
+            s.append("\n7) Relatório de todos os clientes");
+            s.append("\n8) Encontrar cliente por id");
+            s.append("\n9) Listar clientes por id");
             s.append("\n");
             s.append(detalheDivisorTraco());
             
@@ -395,19 +399,28 @@ public class App {
     //#endregion
 
     //#region Cliente
-        private static Cliente localizarCliente(List<Cliente> clientes, int id){
+        private static Cliente localizarCliente(int id){
             Cliente procurado = null;
             for(Cliente c : clientes){
-                procurado = c.hashCode() == id ? c : null;
+                if(c.hashCode() == id)
+                    procurado = c;
             }
             return procurado;
+        }
+
+        private static String listarClientes(){
+            StringBuilder s = new StringBuilder();
+            for (Cliente c : clientes) {
+                s.append(String.format("\n%d) %s", c.hashCode(), c.toString()));
+            }
+            return s.toString();
         }
 
         private static Cliente criarCliente(String nome){  
              return new Cliente(nome);
         }
 
-        private static String relatorioClientes(List<Cliente> clientes){
+        private static String relatorioClientes(){
             StringBuilder s = new StringBuilder();
             for (Cliente cliente : clientes) {
                 s.append(cliente.relatorioPedidos());
@@ -415,7 +428,10 @@ public class App {
             }
             return s.toString();
         }
+        
+    //#endregion
 
+    //#region Gerador automático
         static void gerarClientes(){
             Cliente novo = new Cliente("Anônimo");
             clientes.add(novo);
@@ -432,19 +448,86 @@ public class App {
         }
 
         static void gerarPedidos(){
+            Random aleat = new Random(42);
+            int quantos = clientes.size()*16;
+            Pedido pedido;
+            IComida comida = null;
+
+            for(int i = 0; i < quantos; i++){
+                int tipo = aleat.nextInt(10_000) % 3;
+                if(tipo <= 1){
+                    pedido = new PedidoLocal();
+                } else{
+                    pedido = new PedidoEntrega(aleat.nextInt(10) + 1);
+                }
+
+                int qntComidas = aleat.nextInt(1000);
+
+                if(qntComidas > 950){
+                    qntComidas = 4;
+                } else if(qntComidas > 750){
+                    qntComidas = 3;
+                } else if(qntComidas > 500){
+                    qntComidas = 2;
+                } else{
+                    qntComidas = 1;
+                }
+
+
+                for (int j = 0; j < qntComidas; j++) {
+                    tipo = aleat.nextInt(30_000) % 5;
+                    switch(tipo){
+                        case 0,3,4 -> {
+                            int qntAdicionais = aleat.nextInt(6);
+                            int borda = aleat.nextInt(EBordas.values().length);
+                            comida = new Pizza(qntAdicionais);
+                            ((Pizza)comida).adicionarBorda(borda);
+                        }
+                        case 1 -> {
+                                int bebida = aleat.nextInt(EBebidas.values().length);
+                                comida = EBebidas.values()[bebida];
+                            }
+                        case 2 -> {
+                                int sobre = aleat.nextInt(ESobremesas.values().length);
+                                comida = ESobremesas.values()[sobre];
+                            }
+                    }
+                    
+                    try{
+                        pedido.adicionar(comida);
+                    } catch(IllegalStateException ise){
+                        System.err.println("Comida inválida | Pedido sem comida");
+                    }
+                    }
+                    // Cliente quem = clientes.get((aleat.nextInt(clientes.size())+1));
+                    Cliente quem = clientes.get((aleat.nextInt(clientes.size())));
+
+                    if(quem == null)
+                        quem = clientes.get(1);
+
+                    pedido.fecharPedido();
+                    quem.registrarPedido(pedido);
+                    todosOsPedidos.add(pedido);
             
-        }
+                }
+            }
+        
 
     static void config() {
         gerarClientes();
+        gerarPedidos();
     }
     //#endregion
    
     //#region Fidelidade
     private static void atualizarFidelidade(){
-        
+        System.out.println("Atualizando Fidelidades");
+        for(Cliente c : clientes){
+            c.atualizaCategoria();
+        }
     }
    //#endregion
+   
     public static void main(String[] args) throws Exception {
         // LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
         // LinkedList<Cliente> clientes = new LinkedList<>();
@@ -464,7 +547,8 @@ public class App {
                         System.out.print("\nAté a próxima! =^.^=");
                         continue;
                     }
-                    case 1 -> {
+                    case 1 -> atualizarFidelidade();
+                    case 2 -> {
                         System.out.println("\n --- Criando um novo pedido ---");
                         int escolhaEntrega = InputUtils.lerInt(menuEntrega());
                         double distancia = 0;
@@ -472,7 +556,7 @@ public class App {
                             distancia = InputUtils.lerDouble("\nQual a distância até o local?: ");
                         }
                         int idCliente = InputUtils.lerInt("Digite o id do cliente: ");
-                        Cliente cliente = localizarCliente(clientes, idCliente);
+                        Cliente cliente = localizarCliente(idCliente);
                         if(cliente == null){
                             limparTela();
                             System.out.println("\nCliente não encontrado.\n\n---Criando novo cliente---");
@@ -483,7 +567,7 @@ public class App {
                         cliente.registrarPedido(abrirPedido(todosOsPedidos, escolhaEntrega, distancia));
                         
                     }
-                    case 2 -> {
+                    case 3 -> {
                     
                     System.out.println("\n --- Alterando um pedido ---");
                     if(todosOsPedidos.size() > 0){
@@ -499,7 +583,7 @@ public class App {
                     }
                     System.out.println("Não há pedidos registrados");
                     }
-                    case 3 -> {
+                    case 4 -> {
                     System.out.println("\n --- Exibindo relatório de um pedido ---");
                     if(todosOsPedidos.size() > 0){
                         idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
@@ -508,7 +592,7 @@ public class App {
                     }
                     System.out.println("Não há pedidos registrados");
                     }
-                    case 4 ->{
+                    case 5 ->{
                     if(todosOsPedidos.size() > 0){
                     System.out.println("\n --- Finalizando pedido ---");
                     idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
@@ -533,8 +617,18 @@ public class App {
                 } 
                 System.out.println("Não há pedidos registrados");    
                 }
-                    case 5 -> System.out.print(relatorioTodosOsPedidos(todosOsPedidos));
-                    case 6 -> System.out.print(relatorioClientes(clientes));
+                    case 6 -> System.out.print(relatorioTodosOsPedidos(todosOsPedidos));
+                    case 7 -> System.out.print(relatorioClientes());
+                    case 8 -> {
+                        int id = InputUtils.lerInt("Insira o id: ");
+                        Cliente c = localizarCliente(id);
+                        if(c == null){
+                            System.out.println("Cliente não encontrado");
+                            continue;
+                        }
+                        System.out.println(c.toString());
+                    }
+                    case 9 -> System.out.print(listarClientes());
                 }
                 
             } catch (NullPointerException npe){
