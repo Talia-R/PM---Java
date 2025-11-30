@@ -126,7 +126,7 @@ public class Pizza implements IComida {
         if(borda != EBordas.values()[0]){
             s.append(String.format(". %s", borda.getDescricaoBorda()));
         }
-            s.append(" | Total: " + moeda.format(precoFinal()));
+            s.append(" | Total da Pizza: " + moeda.format(precoFinal()));
             return s.toString();
     }
     

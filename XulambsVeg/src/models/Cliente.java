@@ -34,9 +34,9 @@ public class Cliente{
         return pedidos.size();
     }
 
-    public double totalGasto(){
+    public double totalGastoCliente(){
         double total = 0;
-        if(pedidos.size() == 0)
+        if(pedidos.size() < 0)
             throw new IllegalArgumentException("Lista vazia");
         for(Pedido p : pedidos){
             total += p.calcularPrecoFinal();
@@ -46,7 +46,7 @@ public class Cliente{
 
     @Override
     public String toString(){
-        return String.format("Nome: %s | ID: #%02d | Categoria: %s", nome, id, categoria.toString());
+        return String.format("Nome: %s | ID: #%02d | Categoria: %s | Gasto total: R$ %.2f", nome, id, categoria.toString(), totalGastoCliente());
     }
 
     @Override
