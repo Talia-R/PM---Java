@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import models.BaseDados;
 import models.Cliente;
 import models.EBebidas;
 import models.EBordas;
@@ -25,8 +26,8 @@ import models.Pizza;
 
 public class App {
     static NumberFormat moeda = NumberFormat.getCurrencyInstance();
-    static HashMap<Integer, Pedido> todosOsPedidos = new HashMap<>();
-    static HashMap<Integer, Cliente> clientes = new HashMap<>();
+    static BaseDados<Pedido> pedidos;
+    static BaseDados<Cliente> clientes;
     
     //#region Utilitarios
 
@@ -301,7 +302,7 @@ public class App {
 
             System.out.print(novoPedido.cabecalhoPedido());
             novoPedido.adicionar(comprarComida());
-            todosOsPedidos.put(novoPedido.hashCode(), novoPedido);
+            pedidos.put(novoPedido);
             return novoPedido;
         }
 
@@ -311,8 +312,8 @@ public class App {
          * @return se a lista com todos os pedidos não for vazia, retorna o pedido procurado caso esteja vazia retorna null.
          */
         public static Pedido localizarPedido(int idPedido){
-            if(todosOsPedidos.size() > 0){
-                for(Pedido pedido : todosOsPedidos.values()){
+            if(pedidos.size() > 0){
+                for(Pedido pedido : pedidos.values()){
                     if(pedido.getIdPedido() == idPedido)
                         return pedido;
                 }
@@ -327,7 +328,7 @@ public class App {
         private static HashMap<Integer,Pedido> criarListaPedidosAbertos(){
             HashMap<Integer,Pedido> todosPedidosAbertos = new HashMap<>();
 
-            for(Pedido pedido : todosOsPedidos.values()){
+            for(Pedido pedido : pedidos.values()){
                 if(pedido.getStatus()){
                     todosPedidosAbertos.put(pedido.hashCode(), pedido);
                 }
@@ -413,13 +414,13 @@ public class App {
     //#region Gerador automático
         static void gerarClientes(){
             Cliente novo = new Cliente("Anônimo");
-            clientes.put(novo.hashCode(), novo);
+            clientes.put(novo);
             try{
                 Path caminho = Path.of("src","Clientes.txt");
                 List<String> nomes = Files.readAllLines(caminho, Charset.forName("UTF-8"));
                 for(String nome : nomes){
                     novo = new Cliente(nome);
-                    clientes.put(novo.hashCode(), novo);
+                    clientes.put(novo);
                 }
             } catch(IOException exception){
                 System.out.println("Problema na leitura do arquivo. Sistema iniciado somente com cliente anônimo.");
@@ -486,7 +487,7 @@ public class App {
 
                     pedido.fecharPedido();
                     quem.registrarPedido(pedido);
-                    todosOsPedidos.put(pedido.hashCode(), pedido);
+                    pedidos.put(pedido);
             
                 }
             }
@@ -508,43 +509,43 @@ public class App {
    
    //#region Relatórios
    
-        private static String relatorioClientesPorID(){
-            StringBuilder s = new StringBuilder();
-            for (Cliente cliente : clientes.values()) {
-                s.append(cliente.relatorioPedidos());
-                s.append("\n" + detalheDivisorTraco());
-            }
-            return s.toString();
-        }
+        // private static String relatorioClientesPorID(){
+        //     StringBuilder s = new StringBuilder();
+        //     for (Cliente cliente : clientes.values()) {
+        //         s.append(cliente.relatorioPedidos());
+        //         s.append("\n" + detalheDivisorTraco());
+        //     }
+        //     return s.toString();
+        // }
 
-        private static String relatorioClientesPorGastoCrescente(){
-            StringBuilder s = new StringBuilder();
-            List<Cliente> list = new ArrayList<>(clientes.values());
-            list.sort(null);
-            for (Cliente cliente : list) {
-                s.append(cliente.relatorioPedidos());
-                s.append("\n" + detalheDivisorTraco());
-            }
-            return s.toString();
-        }
+        // private static String relatorioClientesPorGastoCrescente(){
+        //     StringBuilder s = new StringBuilder();
+        //     List<Cliente> list = new ArrayList<>(clientes.values());
+        //     list.sort(null);
+        //     for (Cliente cliente : list) {
+        //         s.append(cliente.relatorioPedidos());
+        //         s.append("\n" + detalheDivisorTraco());
+        //     }
+        //     return s.toString();
+        // }
 
-        private static String relatorioNomesClientesPorID(){
-            StringBuilder s = new StringBuilder();
-            for (Cliente c : clientes.values()) {
-                s.append(String.format("\n%d) %s", c.hashCode(), c.toString()));
-            }
-            return s.toString();
-        }
+        // private static String relatorioNomesClientesPorID(){
+        //     StringBuilder s = new StringBuilder();
+        //     for (Cliente c : clientes.values()) {
+        //         s.append(String.format("\n%d) %s", c.hashCode(), c.toString()));
+        //     }
+        //     return s.toString();
+        // }
 
-        private static String relatorioNomesClientesPorGasto(){
-            StringBuilder s = new StringBuilder();
-            List<Cliente> list = new LinkedList<>(clientes.values());
-            list.sort(null);
-            for (Cliente c : list) {
-                s.append(String.format("\n%d) %s", c.hashCode(), c.toString()));
-            }
-            return s.toString();
-        }
+        // private static String relatorioNomesClientesPorGasto(){
+        //     StringBuilder s = new StringBuilder();
+        //     List<Cliente> list = new LinkedList<>(clientes.values());
+        //     list.sort(null);
+        //     for (Cliente c : list) {
+        //         s.append(String.format("\n%d) %s", c.hashCode(), c.toString()));
+        //     }
+        //     return s.toString();
+        // }
 
         private static void relatorioEscolhidoCliente(){
             Comparator<Cliente> compNome = (c1, c2) -> c1.getNome().compareTo(c2.getNome());
@@ -556,24 +557,15 @@ public class App {
             System.out.println("2) Gasto");
             System.out.println("3) ID");
             int opcao = InputUtils.lerInt("Escolha o relatório: ");
-            String resultado = null;
             switch(opcao){
-                case 1 -> resultado = relatorioOrdenado(clientes, compNome);
-                case 2 -> resultado = relatorioOrdenado(clientes, compGasto);
-                case 3 -> resultado = relatorioOrdenado(clientes, compId);
+                case 1 -> relatorioOrdenado(clientes, compNome);
+                case 2 -> relatorioOrdenado(clientes, compGasto);
+                case 3 -> relatorioOrdenado(clientes, compId);
             }
-            System.out.println(resultado);
         }
 
-        private static <T> String relatorioOrdenado(HashMap<Integer, T > hashmap, Comparator<T> comparador ){
-            StringBuilder s = new StringBuilder();
-            List<T> list = new LinkedList<>(hashmap.values());
-            list.sort(comparador);
-            for(T elemento : list){
-                s.append(String.format("\n%d) %s", elemento.hashCode(), elemento.toString()));
-            }
-
-            return s.toString();
+        private static <T> void relatorioOrdenado(BaseDados<T> base, Comparator<T> comparador ){
+            System.out.println(base.sortedReport(comparador));
         }
 
         /**
@@ -582,7 +574,7 @@ public class App {
          * @return caso haja elementos em todos os pedidos retorna o relatório do pedido requerido, caso não retorna "Pedido não encontrado".
          */
         public static String relatorioPedido(int idPedido){
-            if(todosOsPedidos.size() > 0){
+            if(pedidos.size() > 0){
                 Pedido pedido = localizarPedido(idPedido);
                 return pedido.toString();
             }
@@ -595,8 +587,8 @@ public class App {
          */
         public static String relatorioTodosOsPedidos(){
             StringBuilder s = new StringBuilder();
-            if(todosOsPedidos.size() > 0){
-                for(Pedido pedido : todosOsPedidos.values()){
+            if(pedidos.size() > 0){
+                for(Pedido pedido : pedidos.values()){
                     s.append(pedido.toString() + "\n");
                     s.append("\n");
                 }
@@ -611,6 +603,8 @@ public class App {
    //#endregion
 
     public static void main(String[] args) throws Exception {
+        pedidos = new BaseDados<>(1000);
+        clientes = new BaseDados<>(80);
         config();
         
         System.out.println(cabecalho());
@@ -642,14 +636,14 @@ public class App {
                             System.out.println("\nCliente não encontrado.\n\n---Criando novo cliente---");
                             String nomeCliente = InputUtils.lerString("Digite o nome do cliente: ");
                             cliente = criarCliente(nomeCliente);
-                            clientes.put(cliente.hashCode(), cliente);
+                            clientes.put(cliente);
                         }
                         cliente.registrarPedido(abrirPedido(escolhaEntrega, distancia));
                         
                     }
                     case 3 -> {
                     System.out.println("\n --- Alterando um pedido ---");
-                    if(todosOsPedidos.size() > 0){
+                    if(pedidos.size() > 0){
                         System.out.print(relatorioTodosOsPedidos());
                         idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
                         if(verificarPedidoAberto(idPedidoAtual)){
@@ -663,10 +657,10 @@ public class App {
                     System.out.println("Não há pedidos registrados");
                     }
                     case 4 ->{
-                    if(todosOsPedidos.size() > 0){
+                    if(pedidos.size() > 0){
                     System.out.println("\n --- Finalizando pedido ---");
                     idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
-                    for(Pedido pedido : todosOsPedidos.values()){
+                    for(Pedido pedido : pedidos.values()){
                         if(idPedidoAtual == pedido.getIdPedido()){
                             pedidoAtual = pedido;
                         }
