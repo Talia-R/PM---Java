@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.InputMismatchException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,9 +22,8 @@ import models.Pizza;
 
 public class App {
     static NumberFormat moeda = NumberFormat.getCurrencyInstance();
-    // static HashMap<Integer,Pedido> todosOsPedidos = new LinkedList<>();
-    static LinkedList<Cliente> clientes = new LinkedList<>();
     static HashMap<Integer, Pedido> todosOsPedidos = new HashMap<>();
+    static HashMap<Integer, Cliente> clientes = new HashMap<>();
     
     /**
      * Retorna uma string formada pela repetição do divisor informado.
@@ -400,7 +398,7 @@ public class App {
     //#region Cliente
         private static Cliente localizarCliente(int id){
             Cliente procurado = null;
-            for(Cliente c : clientes){
+            for(Cliente c : clientes.values()){
                 if(c.hashCode() == id)
                     procurado = c;
             }
@@ -409,7 +407,7 @@ public class App {
 
         private static String listarClientes(){
             StringBuilder s = new StringBuilder();
-            for (Cliente c : clientes) {
+            for (Cliente c : clientes.values()) {
                 s.append(String.format("\n%d) %s", c.hashCode(), c.toString()));
             }
             return s.toString();
@@ -421,7 +419,7 @@ public class App {
 
         private static String relatorioClientes(){
             StringBuilder s = new StringBuilder();
-            for (Cliente cliente : clientes) {
+            for (Cliente cliente : clientes.values()) {
                 s.append(cliente.relatorioPedidos());
                 s.append("\n" + detalheDivisorTraco());
             }
@@ -433,13 +431,13 @@ public class App {
     //#region Gerador automático
         static void gerarClientes(){
             Cliente novo = new Cliente("Anônimo");
-            clientes.add(novo);
+            clientes.put(novo.hashCode(), novo);
             try{
                 Path caminho = Path.of("src","Clientes.txt");
                 List<String> nomes = Files.readAllLines(caminho, Charset.forName("UTF-8"));
                 for(String nome : nomes){
                     novo = new Cliente(nome);
-                    clientes.add(novo);
+                    clientes.put(novo.hashCode(), novo);
                 }
             } catch(IOException exception){
                 System.out.println("Problema na leitura do arquivo. Sistema iniciado somente com cliente anônimo.");
@@ -521,7 +519,7 @@ public class App {
     //#region Fidelidade
     private static void atualizarFidelidade(){
         System.out.println("Atualizando Fidelidades");
-        for(Cliente c : clientes){
+        for(Cliente c : clientes.values()){
             c.atualizaCategoria();
         }
     }
@@ -561,7 +559,7 @@ public class App {
                             System.out.println("\nCliente não encontrado.\n\n---Criando novo cliente---");
                             String nomeCliente = InputUtils.lerString("Digite o nome do cliente: ");
                             cliente = criarCliente(nomeCliente);
-                            clientes.add(cliente);
+                            clientes.put(cliente.hashCode(), cliente);
                         }
                         cliente.registrarPedido(abrirPedido(todosOsPedidos, escolhaEntrega, distancia));
                         

@@ -57,7 +57,7 @@ public class Cliente{
     @Override
     public boolean equals(Object obj){
         Cliente outro = (Cliente) obj;
-        return this.hashCode() == obj.hashCode();
+        return this.hashCode() == outro.hashCode();
     }
 
     public String relatorioPedidos(){
