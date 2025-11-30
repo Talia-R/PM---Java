@@ -3,7 +3,7 @@ package models;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Cliente{
+public class Cliente implements Comparable<Cliente>{
     private static int ultimoID;
     private int id;
     private String nome;
@@ -44,6 +44,18 @@ public class Cliente{
         return total;
     }
 
+    public String relatorioPedidos(){
+        StringBuilder s = new StringBuilder("\n" + toString());
+        for (Pedido p : pedidos) {
+            s.append("\n" + p.toString());
+        }
+        return s.toString();
+    }
+
+    public String getNome(){
+        return nome;
+    }
+
     @Override
     public String toString(){
         return String.format("Nome: %s | ID: #%02d | Categoria: %s | Gasto total: R$ %.2f", nome, id, categoria.toString(), totalGastoCliente());
@@ -60,12 +72,17 @@ public class Cliente{
         return this.hashCode() == outro.hashCode();
     }
 
-    public String relatorioPedidos(){
-        StringBuilder s = new StringBuilder("\n" + toString());
-        for (Pedido p : pedidos) {
-            s.append("\n" + p.toString());
+    @Override
+    public int compareTo(Cliente outro) {
+        int resultado = 0;
+        
+        if(totalGastoCliente() < outro.totalGastoCliente()){
+            resultado = -1;
+        } else if(totalGastoCliente() > outro.totalGastoCliente()){
+            resultado = 1;
         }
-        return s.toString();
+
+        return resultado;
     }
 
 }

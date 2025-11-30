@@ -4,8 +4,11 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -401,14 +404,6 @@ public class App {
             return procurado;
         }
 
-        private static String listarClientes(){
-            StringBuilder s = new StringBuilder();
-            for (Cliente c : clientes.values()) {
-                s.append(String.format("\n%d) %s", c.hashCode(), c.toString()));
-            }
-            return s.toString();
-        }
-
         private static Cliente criarCliente(String nome){  
              return new Cliente(nome);
         }
@@ -513,12 +508,71 @@ public class App {
    
    //#region Relatórios
    
-        private static String relatorioClientes(){
+        private static String relatorioClientesPorID(){
             StringBuilder s = new StringBuilder();
             for (Cliente cliente : clientes.values()) {
                 s.append(cliente.relatorioPedidos());
                 s.append("\n" + detalheDivisorTraco());
             }
+            return s.toString();
+        }
+
+        private static String relatorioClientesPorGastoCrescente(){
+            StringBuilder s = new StringBuilder();
+            List<Cliente> list = new ArrayList<>(clientes.values());
+            list.sort(null);
+            for (Cliente cliente : list) {
+                s.append(cliente.relatorioPedidos());
+                s.append("\n" + detalheDivisorTraco());
+            }
+            return s.toString();
+        }
+
+        private static String relatorioNomesClientesPorID(){
+            StringBuilder s = new StringBuilder();
+            for (Cliente c : clientes.values()) {
+                s.append(String.format("\n%d) %s", c.hashCode(), c.toString()));
+            }
+            return s.toString();
+        }
+
+        private static String relatorioNomesClientesPorGasto(){
+            StringBuilder s = new StringBuilder();
+            List<Cliente> list = new LinkedList<>(clientes.values());
+            list.sort(null);
+            for (Cliente c : list) {
+                s.append(String.format("\n%d) %s", c.hashCode(), c.toString()));
+            }
+            return s.toString();
+        }
+
+        private static void relatorioEscolhidoCliente(){
+            Comparator<Cliente> compNome = (c1, c2) -> c1.getNome().compareTo(c2.getNome());
+            Comparator<Cliente> compGasto = (c1, c2) -> c1.totalGastoCliente() > (c2.totalGastoCliente()) ? 1 : -1;
+            Comparator<Cliente> compId = (c1, c2) -> c1.hashCode() - (c2.hashCode());
+            
+            System.out.println("Ordenar por: ");
+            System.out.println("1) Nome");
+            System.out.println("2) Gasto");
+            System.out.println("3) ID");
+            int opcao = InputUtils.lerInt("Escolha o relatório: ");
+            String resultado = null;
+            switch(opcao){
+                case 1 -> resultado = relatorioOrdenado(clientes, compNome);
+                case 2 -> resultado = relatorioOrdenado(clientes, compGasto);
+                case 3 -> resultado = relatorioOrdenado(clientes, compId);
+            }
+            System.out.println(resultado);
+        }
+
+        private static <T> String relatorioOrdenado(HashMap<Integer, T > hashmap, Comparator<T> comparador ){
+            StringBuilder s = new StringBuilder();
+            List<T> list = new LinkedList<>(hashmap.values());
+            list.sort(comparador);
+            for(T elemento : list){
+                s.append(String.format("\n%d) %s", elemento.hashCode(), elemento.toString()));
+            }
+
             return s.toString();
         }
 
@@ -551,6 +605,8 @@ public class App {
             }
             return s.toString();
         }
+
+
 
    //#endregion
 
@@ -632,33 +688,43 @@ public class App {
                     System.out.println("Não há pedidos registrados");    
                 }
                     case 5 -> {
-                        System.out.println(menuRelatorios());
-                        int opcao = InputUtils.lerInt("Escolha: ");
-                        switch(opcao){
-                            case 1 -> {
-                                System.out.println("\n --- Exibindo relatório de um pedido ---");
-                                if(todosOsPedidos.size() > 0){
-                                    idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
-                                    System.out.println(relatorioPedido(idPedidoAtual));
-                                    continue;
-                                }
-                                System.out.println("Não há pedidos registrados");
-                            }
+                        relatorioEscolhidoCliente();
+                        // int opcao;
+                        // do{
+                        //     System.out.println(menuRelatorios());
+                        //     opcao = InputUtils.lerInt("Escolha: ");
+                        // switch(opcao){
 
-                            case 2 -> System.out.print(relatorioTodosOsPedidos());
-                            case 3 -> {
-                                int id = InputUtils.lerInt("Insira o id: ");
-                                Cliente c = localizarCliente(id);
-                                if(c == null){
-                                    System.out.println("Cliente não encontrado");
-                                    continue;
-                                }
-                                System.out.println(c.toString());
-                    }
-                            case 4 -> System.out.print(relatorioClientes());
-                            case 5 -> System.out.print(listarClientes());
+
+                    //         case 1 -> {
+                    //             System.out.println("\n --- Exibindo relatório de um pedido ---");
+                    //             if(todosOsPedidos.size() > 0){
+                    //                 idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
+                    //                 System.out.println(relatorioPedido(idPedidoAtual));
+                    //                 continue;
+                    //             }
+                    //             System.out.println("Não há pedidos registrados");
+                    //         }
+
+                    //         case 2 -> System.out.print(relatorioTodosOsPedidos());
+                    //         case 3 -> {
+                    //             int id = InputUtils.lerInt("Insira o id: ");
+                    //             Cliente c = localizarCliente(id);
+                    //             if(c == null){
+                    //                 System.out.println("Cliente não encontrado");
+                    //                 continue;
+                    //             }
+                    //             System.out.println(c.toString());
+                    // }
+                    //         case 4 -> System.out.print(relatorioClientesPorID());
+                    //         case 5 -> System.out.print(relatorioClientesPorGastoCrescente());
+                    //         case 6 -> System.out.print(relatorioNomesClientesPorID() + "\n");
+                    //         case 7 -> System.out.print(relatorioNomesClientesPorGasto() + "\n");
+                            // case 8 ->  ordem alfabetica
+                            // case 9 ->  ordem fidelidade
                             
-                        }
+                        //}
+                        // } while(opcao != 0);
                     
                     }
             
