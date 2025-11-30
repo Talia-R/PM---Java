@@ -158,15 +158,16 @@ public abstract class Pedido {
     public String toString(){
         NumberFormat moeda = NumberFormat.getCurrencyInstance();
         StringBuilder s = new StringBuilder();
-        int qntItens = 1;
+        int qntItens = 0;
         String status = definirStatus();
 
         s.append(String.format("\n#Pedido: %02d - (%s) | Status: %s | %s", idPedido, data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), status, setarModalidadeEntrega()));
 
         for(IComida comida : comidas){
-            s.append(String.format("\n%d) %s",qntItens, comida.toString()));
+            s.append(String.format("\n- %s", comida.toString()));
             qntItens++;
         }
+        s.append("\n" + qntItens + " item(ns) nessa compra.");
         s.append("\nTotal pedido: " + moeda.format(calcularPrecoFinal()));
         return s.toString();
     }

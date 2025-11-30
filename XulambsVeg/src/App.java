@@ -4,10 +4,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import models.Cliente;
@@ -22,12 +22,11 @@ import models.PedidoLocal;
 import models.Pizza;
 
 public class App {
-    // static LinkedList<Pizza> pizzas = new LinkedList<>();
-    // static LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
     static NumberFormat moeda = NumberFormat.getCurrencyInstance();
-    static LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
+    // static HashMap<Integer,Pedido> todosOsPedidos = new LinkedList<>();
     static LinkedList<Cliente> clientes = new LinkedList<>();
-    // static Map<Integer, Cliente> clientes;
+    static HashMap<Integer, Pedido> todosOsPedidos = new HashMap<>();
+    
     /**
      * Retorna uma string formada pela repetição do divisor informado.
      * @param divisor o texto que será repetido
@@ -264,7 +263,7 @@ public class App {
          * Abre um novo pedido. Assim que o pedido é aberto, um pizza é adicionada a ele
          * @return
          */
-        public static Pedido abrirPedido(LinkedList<Pedido> todosOsPedidos, int modalidadePedido, double distancia){
+        public static Pedido abrirPedido(HashMap<Integer, Pedido> todosOsPedidos, int modalidadePedido, double distancia){
             Pedido novoPedido = switch(modalidadePedido) {
                 case 1 -> novoPedido = new PedidoLocal();
                 case 2 -> novoPedido = new PedidoEntrega(distancia);
@@ -273,7 +272,7 @@ public class App {
 
             System.out.print(novoPedido.cabecalhoPedido());
             novoPedido.adicionar(comprarComida());
-            todosOsPedidos.add(novoPedido);
+            todosOsPedidos.put(novoPedido.hashCode(), novoPedido);
             return novoPedido;
         }
 
@@ -282,9 +281,9 @@ public class App {
          * @param idPedido id do pedido a ser localizado.
          * @return se a lista com todos os pedidos não for vazia, retorna o pedido procurado caso esteja vazia retorna null.
          */
-        public static Pedido localizarPedido(LinkedList<Pedido> todosOsPedidos, int idPedido){
+        public static Pedido localizarPedido(HashMap<Integer,Pedido> todosOsPedidos, int idPedido){
             if(todosOsPedidos.size() > 0){
-                for(Pedido pedido : todosOsPedidos){
+                for(Pedido pedido : todosOsPedidos.values()){
                     if(pedido.getIdPedido() == idPedido)
                         return pedido;
                 }
@@ -296,12 +295,12 @@ public class App {
          * Retorna uma lista com todos os pedidos que estão marcados com status de aberto.
          * @return Lista com todos os pedidos que estão em aberto.
          */
-        private static LinkedList<Pedido> criarListaPedidosAbertos(LinkedList<Pedido> todosOsPedidos){
-            LinkedList<Pedido> todosPedidosAbertos = new LinkedList<>();
+        private static HashMap<Integer,Pedido> criarListaPedidosAbertos(HashMap<Integer,Pedido> todosOsPedidos){
+            HashMap<Integer,Pedido> todosPedidosAbertos = new HashMap<>();
 
-            for(Pedido pedido : todosOsPedidos){
+            for(Pedido pedido : todosOsPedidos.values()){
                 if(pedido.getStatus()){
-                    todosPedidosAbertos.add(pedido);
+                    todosPedidosAbertos.put(pedido.hashCode(), pedido);
                 }
             }
             return todosPedidosAbertos;
@@ -313,10 +312,10 @@ public class App {
          * @param idPedido id do pedido que quer encontrar
          * @return se o pedido procurado está em aberto
          */
-        private static boolean verificarPedidoAberto(LinkedList<Pedido> todosOsPedidos, int idPedido){
-            LinkedList<Pedido> todosOsPedidosAbertos = criarListaPedidosAbertos(todosOsPedidos);
+        private static boolean verificarPedidoAberto(HashMap<Integer,Pedido> todosOsPedidos, int idPedido){
+            HashMap<Integer,Pedido> todosOsPedidosAbertos = criarListaPedidosAbertos(todosOsPedidos);
             boolean pedidoEstaAberto = false;
-            for(Pedido pedido : todosOsPedidosAbertos){
+            for(Pedido pedido : todosOsPedidosAbertos.values()){
                 if(idPedido == pedido.getIdPedido()){
                     pedidoEstaAberto = true;
                 }
@@ -330,7 +329,7 @@ public class App {
          * @param idPedidoAtual id do pedido a ser alterado.
          * @return pedido após ter sido alterado.
          */
-        public static Pedido alterarPedido(LinkedList<Pedido> todosOsPedidos, int idPedidoAtual){
+        public static Pedido alterarPedido(HashMap<Integer,Pedido> todosOsPedidos, int idPedidoAtual){
             Pedido pedido = localizarPedido(todosOsPedidos, idPedidoAtual);
             System.out.println(pedido.toString());
 
@@ -370,7 +369,7 @@ public class App {
          * @param idPedido id do pedido a ter o relatório exibido
          * @return caso haja elementos em todos os pedidos retorna o relatório do pedido requerido, caso não retorna "Pedido não encontrado".
          */
-        public static String relatorioPedido(LinkedList<Pedido> todosOsPedidos, int idPedido){
+        public static String relatorioPedido(HashMap<Integer,Pedido> todosOsPedidos, int idPedido){
             if(todosOsPedidos.size() > 0){
                 Pedido pedido = localizarPedido(todosOsPedidos, idPedido);
                 return pedido.toString();
@@ -382,10 +381,10 @@ public class App {
          * Retorna o relatório de todos os pedidos salvos na lista 'todos os pedidos'.
          * @return um relatório de todos os pedidos salvos na lista.
          */
-        public static String relatorioTodosOsPedidos(LinkedList<Pedido> todosOsPedidos){
+        public static String relatorioTodosOsPedidos(HashMap<Integer,Pedido> todosOsPedidos){
             StringBuilder s = new StringBuilder();
             if(todosOsPedidos.size() > 0){
-                for(Pedido pedido : todosOsPedidos){
+                for(Pedido pedido : todosOsPedidos.values()){
                     s.append(pedido.toString() + "\n");
                     s.append("\n");
                 }
@@ -507,7 +506,7 @@ public class App {
 
                     pedido.fecharPedido();
                     quem.registrarPedido(pedido);
-                    todosOsPedidos.add(pedido);
+                    todosOsPedidos.put(pedido.hashCode(), pedido);
             
                 }
             }
@@ -529,7 +528,7 @@ public class App {
    //#endregion
    
     public static void main(String[] args) throws Exception {
-        // LinkedList<Pedido> todosOsPedidos = new LinkedList<>();
+        // HashMap<Integer,Pedido> todosOsPedidos = new LinkedList<>();
         // LinkedList<Cliente> clientes = new LinkedList<>();
         config();
         
@@ -596,7 +595,7 @@ public class App {
                     if(todosOsPedidos.size() > 0){
                     System.out.println("\n --- Finalizando pedido ---");
                     idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
-                    for(Pedido pedido : todosOsPedidos){
+                    for(Pedido pedido : todosOsPedidos.values()){
                         if(idPedidoAtual == pedido.getIdPedido()){
                             pedidoAtual = pedido;
                         }

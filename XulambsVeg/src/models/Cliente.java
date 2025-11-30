@@ -54,6 +54,12 @@ public class Cliente{
         return id;
     }
 
+    @Override
+    public boolean equals(Object obj){
+        Cliente outro = (Cliente) obj;
+        return this.hashCode() == obj.hashCode();
+    }
+
     public String relatorioPedidos(){
         StringBuilder s = new StringBuilder("\n" + toString());
         for (Pedido p : pedidos) {
