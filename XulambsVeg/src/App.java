@@ -25,39 +25,43 @@ public class App {
     static HashMap<Integer, Pedido> todosOsPedidos = new HashMap<>();
     static HashMap<Integer, Cliente> clientes = new HashMap<>();
     
-    /**
-     * Retorna uma string formada pela repetição do divisor informado.
-     * @param divisor o texto que será repetido
-     * @param repeticoes número de vezes que o divisor deve ser repetido
-     * @return uma nova string composta pela repetição do divisor
-     * @throws IllegalArgumentException se repeticoes for negativo
-     */
-    public static String detalheDivisor(String divisor, int repeticoes){
-        return divisor.repeat(repeticoes);
-    }
+    //#region Utilitarios
 
-    /**
-     * Retorna uma linha divisória composta por 20 traços.
-     * Útil para separar visualmente informações em saídas
-     * @return  uma string contendo 20 caracteres de traço ("-")
-     */
-    public static String detalheDivisorTraco(){
-        return "-".repeat(20);
-    }
+        /**
+         * Retorna uma string formada pela repetição do divisor informado.
+         * @param divisor o texto que será repetido
+         * @param repeticoes número de vezes que o divisor deve ser repetido
+         * @return uma nova string composta pela repetição do divisor
+         * @throws IllegalArgumentException se repeticoes for negativo
+         */
+        public static String detalheDivisor(String divisor, int repeticoes){
+            return divisor.repeat(repeticoes);
+        }
 
-    /**
-     * Retorna uma mensagem de boas-vindas padrão do sistema.
-     * "Bem-vindo(a) ao XulambsVeg!".
-     * @return uma string com a mensagem de boas-vindas
-     */
-    public static String cabecalho(){
-        return " --- Bem-vindo(a) ao XulambsVeg! ---";
-    }
-    
-    static void limparTela() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
+        /**
+         * Retorna uma linha divisória composta por 20 traços.
+         * Útil para separar visualmente informações em saídas
+         * @return  uma string contendo 20 caracteres de traço ("-")
+         */
+        public static String detalheDivisorTraco(){
+            return "-".repeat(20);
+        }
+
+        /**
+         * Retorna uma mensagem de boas-vindas padrão do sistema.
+         * "Bem-vindo(a) ao XulambsVeg!".
+         * @return uma string com a mensagem de boas-vindas
+         */
+        public static String cabecalho(){
+            return " --- Bem-vindo(a) ao XulambsVeg! ---";
+        }
+        
+        static void limparTela() {
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+        }
+        
+    //#endregion
 
     //#region Menu/Cardapios
         /**
@@ -71,12 +75,8 @@ public class App {
             s.append("\n1) Atualizar fidelidade");
             s.append("\n2) Abrir pedido");
             s.append("\n3) Alterar pedido");
-            s.append("\n4) Relatório pedido");
-            s.append("\n5) Encerrar pedido");
-            s.append("\n6) Relatório de todos os pedidos");
-            s.append("\n7) Relatório de todos os clientes");
-            s.append("\n8) Encontrar cliente por id");
-            s.append("\n9) Listar clientes por id");
+            s.append("\n4) Encerrar pedido");
+            s.append("\n5) Relatórios");
             s.append("\n");
             s.append(detalheDivisorTraco());
             
@@ -144,7 +144,35 @@ public class App {
             }
             return s.toString();
         }
-    //#endregion
+    
+        public static String menuRelatorios(){
+            StringBuilder s = new StringBuilder();
+            s.append(detalheDivisorTraco());
+            s.append("\n");
+            s.append("Relatórios em ordem:");
+            s.append("\n");
+            s.append("\n---P E D I D O S---");
+            s.append("\n1) Encontrar Pedido por ID");
+            s.append("\n2) Relatório de todos os pedidos");
+
+            s.append("\n");
+            s.append("\n---C L I E N T E S---");
+            s.append("\n3) Encontrar Cliente por ID"); // refatorar esse e o de cima, é a mesma coisa para lista diferente
+            s.append("\n4) Relatório de todos os clientes (com pedidos)");
+            s.append("\n5) Relatório de todos os clientes (só nomes)");
+            s.append("\n) Alfabética");
+            s.append("\n) Gasto (crescente)");
+
+            s.append("\n");
+            s.append("\n---F I D E L I D A D E---");
+            s.append("\n) Fidelidade(crescente)");
+            s.append("\n");
+
+            s.append("\n");
+            s.append(detalheDivisorTraco());
+            return s.toString();
+        }
+        //#endregion
 
     //#region Pizza
         /**
@@ -261,7 +289,7 @@ public class App {
          * Abre um novo pedido. Assim que o pedido é aberto, um pizza é adicionada a ele
          * @return
          */
-        public static Pedido abrirPedido(HashMap<Integer, Pedido> todosOsPedidos, int modalidadePedido, double distancia){
+        public static Pedido abrirPedido(int modalidadePedido, double distancia){
             Pedido novoPedido = switch(modalidadePedido) {
                 case 1 -> novoPedido = new PedidoLocal();
                 case 2 -> novoPedido = new PedidoEntrega(distancia);
@@ -279,7 +307,7 @@ public class App {
          * @param idPedido id do pedido a ser localizado.
          * @return se a lista com todos os pedidos não for vazia, retorna o pedido procurado caso esteja vazia retorna null.
          */
-        public static Pedido localizarPedido(HashMap<Integer,Pedido> todosOsPedidos, int idPedido){
+        public static Pedido localizarPedido(int idPedido){
             if(todosOsPedidos.size() > 0){
                 for(Pedido pedido : todosOsPedidos.values()){
                     if(pedido.getIdPedido() == idPedido)
@@ -293,7 +321,7 @@ public class App {
          * Retorna uma lista com todos os pedidos que estão marcados com status de aberto.
          * @return Lista com todos os pedidos que estão em aberto.
          */
-        private static HashMap<Integer,Pedido> criarListaPedidosAbertos(HashMap<Integer,Pedido> todosOsPedidos){
+        private static HashMap<Integer,Pedido> criarListaPedidosAbertos(){
             HashMap<Integer,Pedido> todosPedidosAbertos = new HashMap<>();
 
             for(Pedido pedido : todosOsPedidos.values()){
@@ -310,8 +338,8 @@ public class App {
          * @param idPedido id do pedido que quer encontrar
          * @return se o pedido procurado está em aberto
          */
-        private static boolean verificarPedidoAberto(HashMap<Integer,Pedido> todosOsPedidos, int idPedido){
-            HashMap<Integer,Pedido> todosOsPedidosAbertos = criarListaPedidosAbertos(todosOsPedidos);
+        private static boolean verificarPedidoAberto(int idPedido){
+            HashMap<Integer,Pedido> todosOsPedidosAbertos = criarListaPedidosAbertos();
             boolean pedidoEstaAberto = false;
             for(Pedido pedido : todosOsPedidosAbertos.values()){
                 if(idPedido == pedido.getIdPedido()){
@@ -327,14 +355,13 @@ public class App {
          * @param idPedidoAtual id do pedido a ser alterado.
          * @return pedido após ter sido alterado.
          */
-        public static Pedido alterarPedido(HashMap<Integer,Pedido> todosOsPedidos, int idPedidoAtual){
-            Pedido pedido = localizarPedido(todosOsPedidos, idPedidoAtual);
+        public static Pedido alterarPedido(int idPedidoAtual){
+            Pedido pedido = localizarPedido(idPedidoAtual);
             System.out.println(pedido.toString());
 
             int opcaoEdicao = InputUtils.lerInt("\n 1) Adicionar Comida | 2) Remover Pizzas | 3) Editar pizzas: ");
 
             switch(opcaoEdicao){
-                // case 1 -> pedido.adicionar(adicionarPizza());
                 case 1 -> pedido.adicionar(comprarComida());
                 case 2 -> {
                     int item = InputUtils.lerInt("\nQual item irá excluir?: ");
@@ -362,37 +389,6 @@ public class App {
             return pedido;
         } 
 
-        /**
-         * Exibe o relatório de um pedido específico.
-         * @param idPedido id do pedido a ter o relatório exibido
-         * @return caso haja elementos em todos os pedidos retorna o relatório do pedido requerido, caso não retorna "Pedido não encontrado".
-         */
-        public static String relatorioPedido(HashMap<Integer,Pedido> todosOsPedidos, int idPedido){
-            if(todosOsPedidos.size() > 0){
-                Pedido pedido = localizarPedido(todosOsPedidos, idPedido);
-                return pedido.toString();
-            }
-            return "Pedido não encontrado";
-        }
-
-        /**
-         * Retorna o relatório de todos os pedidos salvos na lista 'todos os pedidos'.
-         * @return um relatório de todos os pedidos salvos na lista.
-         */
-        public static String relatorioTodosOsPedidos(HashMap<Integer,Pedido> todosOsPedidos){
-            StringBuilder s = new StringBuilder();
-            if(todosOsPedidos.size() > 0){
-                for(Pedido pedido : todosOsPedidos.values()){
-                    s.append(pedido.toString() + "\n");
-                    s.append("\n");
-                }
-            } else {
-                s.append("Não há pedidos registrados\n");
-            }
-            return s.toString();
-        }
-
-
     //#endregion
 
     //#region Cliente
@@ -415,15 +411,6 @@ public class App {
 
         private static Cliente criarCliente(String nome){  
              return new Cliente(nome);
-        }
-
-        private static String relatorioClientes(){
-            StringBuilder s = new StringBuilder();
-            for (Cliente cliente : clientes.values()) {
-                s.append(cliente.relatorioPedidos());
-                s.append("\n" + detalheDivisorTraco());
-            }
-            return s.toString();
         }
         
     //#endregion
@@ -509,11 +496,10 @@ public class App {
                 }
             }
         
-
-    static void config() {
-        gerarClientes();
-        gerarPedidos();
-    }
+        static void config() {
+            gerarClientes();
+            gerarPedidos();
+        }
     //#endregion
    
     //#region Fidelidade
@@ -525,9 +511,50 @@ public class App {
     }
    //#endregion
    
+   //#region Relatórios
+   
+        private static String relatorioClientes(){
+            StringBuilder s = new StringBuilder();
+            for (Cliente cliente : clientes.values()) {
+                s.append(cliente.relatorioPedidos());
+                s.append("\n" + detalheDivisorTraco());
+            }
+            return s.toString();
+        }
+
+        /**
+         * Exibe o relatório de um pedido específico.
+         * @param idPedido id do pedido a ter o relatório exibido
+         * @return caso haja elementos em todos os pedidos retorna o relatório do pedido requerido, caso não retorna "Pedido não encontrado".
+         */
+        public static String relatorioPedido(int idPedido){
+            if(todosOsPedidos.size() > 0){
+                Pedido pedido = localizarPedido(idPedido);
+                return pedido.toString();
+            }
+            return "Pedido não encontrado";
+        }
+
+        /**
+         * Retorna o relatório de todos os pedidos salvos na lista 'todos os pedidos'.
+         * @return um relatório de todos os pedidos salvos na lista.
+         */
+        public static String relatorioTodosOsPedidos(){
+            StringBuilder s = new StringBuilder();
+            if(todosOsPedidos.size() > 0){
+                for(Pedido pedido : todosOsPedidos.values()){
+                    s.append(pedido.toString() + "\n");
+                    s.append("\n");
+                }
+            } else {
+                s.append("Não há pedidos registrados\n");
+            }
+            return s.toString();
+        }
+
+   //#endregion
+
     public static void main(String[] args) throws Exception {
-        // HashMap<Integer,Pedido> todosOsPedidos = new LinkedList<>();
-        // LinkedList<Cliente> clientes = new LinkedList<>();
         config();
         
         System.out.println(cabecalho());
@@ -561,35 +588,25 @@ public class App {
                             cliente = criarCliente(nomeCliente);
                             clientes.put(cliente.hashCode(), cliente);
                         }
-                        cliente.registrarPedido(abrirPedido(todosOsPedidos, escolhaEntrega, distancia));
+                        cliente.registrarPedido(abrirPedido(escolhaEntrega, distancia));
                         
                     }
                     case 3 -> {
-                    
                     System.out.println("\n --- Alterando um pedido ---");
                     if(todosOsPedidos.size() > 0){
-                        System.out.print(relatorioTodosOsPedidos(todosOsPedidos));
+                        System.out.print(relatorioTodosOsPedidos());
                         idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
-                        if(verificarPedidoAberto(todosOsPedidos, idPedidoAtual)){
-                            alterarPedido(todosOsPedidos, idPedidoAtual);// alterar pedido (adicionar ou remover itens)
+                        if(verificarPedidoAberto(idPedidoAtual)){
+                            alterarPedido(idPedidoAtual);// alterar pedido (adicionar ou remover itens)
                             continue;
                         }
-                        Pedido pedido = localizarPedido(todosOsPedidos, idPedidoAtual);
+                        Pedido pedido = localizarPedido(idPedidoAtual);
                         System.out.println(String.format("O pedido %02d está %s",idPedidoAtual, pedido.definirStatus().toLowerCase()));
                         continue;
                     }
                     System.out.println("Não há pedidos registrados");
                     }
-                    case 4 -> {
-                    System.out.println("\n --- Exibindo relatório de um pedido ---");
-                    if(todosOsPedidos.size() > 0){
-                        idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
-                        System.out.println(relatorioPedido(todosOsPedidos, idPedidoAtual));
-                        continue;
-                    }
-                    System.out.println("Não há pedidos registrados");
-                    }
-                    case 5 ->{
+                    case 4 ->{
                     if(todosOsPedidos.size() > 0){
                     System.out.println("\n --- Finalizando pedido ---");
                     idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
@@ -612,20 +629,39 @@ public class App {
                     System.out.println(String.format("\nPedido %d fechado.", idPedidoAtual));
                     continue;
                 } 
-                System.out.println("Não há pedidos registrados");    
+                    System.out.println("Não há pedidos registrados");    
                 }
-                    case 6 -> System.out.print(relatorioTodosOsPedidos(todosOsPedidos));
-                    case 7 -> System.out.print(relatorioClientes());
-                    case 8 -> {
-                        int id = InputUtils.lerInt("Insira o id: ");
-                        Cliente c = localizarCliente(id);
-                        if(c == null){
-                            System.out.println("Cliente não encontrado");
-                            continue;
-                        }
-                        System.out.println(c.toString());
+                    case 5 -> {
+                        System.out.println(menuRelatorios());
+                        int opcao = InputUtils.lerInt("Escolha: ");
+                        switch(opcao){
+                            case 1 -> {
+                                System.out.println("\n --- Exibindo relatório de um pedido ---");
+                                if(todosOsPedidos.size() > 0){
+                                    idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
+                                    System.out.println(relatorioPedido(idPedidoAtual));
+                                    continue;
+                                }
+                                System.out.println("Não há pedidos registrados");
+                            }
+
+                            case 2 -> System.out.print(relatorioTodosOsPedidos());
+                            case 3 -> {
+                                int id = InputUtils.lerInt("Insira o id: ");
+                                Cliente c = localizarCliente(id);
+                                if(c == null){
+                                    System.out.println("Cliente não encontrado");
+                                    continue;
+                                }
+                                System.out.println(c.toString());
                     }
-                    case 9 -> System.out.print(listarClientes());
+                            case 4 -> System.out.print(relatorioClientes());
+                            case 5 -> System.out.print(listarClientes());
+                            
+                        }
+                    
+                    }
+            
                 }
                 
             } catch (NullPointerException npe){
