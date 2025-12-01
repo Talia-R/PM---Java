@@ -11,6 +11,8 @@ import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import models.BaseDados;
 import models.Cliente;
@@ -80,7 +82,11 @@ public class App {
             s.append("\n2) Abrir pedido");
             s.append("\n3) Alterar pedido");
             s.append("\n4) Encerrar pedido");
-            s.append("\n5) Relatórios");
+            s.append("\n5) Relatórios Clientes (Nome/Gasto/ID)");
+            s.append("\n6) Relatório Clientes Gasto");
+            s.append("\n7) Relatório Pedido (ID - crescente)");
+            s.append("\n8) Filtrar por Gasto do Cliente");
+            s.append("\n9) Total Gasto na Pizzaria");
             s.append("\n");
             s.append(detalheDivisorTraco());
             
@@ -547,27 +553,6 @@ public class App {
         //     return s.toString();
         // }
 
-        private static void relatorioEscolhidoCliente(){
-            Comparator<Cliente> compNome = (c1, c2) -> c1.getNome().compareTo(c2.getNome());
-            Comparator<Cliente> compGasto = (c1, c2) -> c1.totalGastoCliente() > (c2.totalGastoCliente()) ? 1 : -1;
-            Comparator<Cliente> compId = (c1, c2) -> c1.hashCode() - (c2.hashCode());
-            
-            System.out.println("Ordenar por: ");
-            System.out.println("1) Nome");
-            System.out.println("2) Gasto");
-            System.out.println("3) ID");
-            int opcao = InputUtils.lerInt("Escolha o relatório: ");
-            switch(opcao){
-                case 1 -> relatorioOrdenado(clientes, compNome);
-                case 2 -> relatorioOrdenado(clientes, compGasto);
-                case 3 -> relatorioOrdenado(clientes, compId);
-            }
-        }
-
-        private static <T> void relatorioOrdenado(BaseDados<T> base, Comparator<T> comparador ){
-            System.out.println(base.sortedReport(comparador));
-        }
-
         /**
          * Exibe o relatório de um pedido específico.
          * @param idPedido id do pedido a ter o relatório exibido
@@ -598,9 +583,38 @@ public class App {
             return s.toString();
         }
 
+        // =============================================
+
+        private static void relatorioEscolhidoCliente(){
+            Comparator<Cliente> compNome = (c1, c2) -> c1.getNome().compareTo(c2.getNome());
+            Comparator<Cliente> compGasto = (c1, c2) -> c1.totalGastoCliente() > (c2.totalGastoCliente()) ? 1 : -1;
+            Comparator<Cliente> compId = (c1, c2) -> c1.hashCode() - (c2.hashCode());
+            
+            System.out.println("Ordenar por: ");
+            System.out.println("1) Nome");
+            System.out.println("2) Gasto");
+            System.out.println("3) ID");
+            int opcao = InputUtils.lerInt("Escolha o relatório: ");
+            switch(opcao){
+                case 1 -> relatorioOrdenado(clientes, compNome);
+                case 2 -> relatorioOrdenado(clientes, compGasto);
+                case 3 -> relatorioOrdenado(clientes, compId);
+            }
+        }
+
+        private static <T> void relatorioOrdenado(BaseDados<T> base, Comparator<T> comparador ){
+            System.out.println(base.sortedReport(comparador));
+        }
+
+        private static void totalGastoPorClientes(){
+            System.out.print("+\nTotal gasto na Pizzaria: ");
+            Function<Pedido, Double> func = (ped) -> ped.valorItens();
+            double total = pedidos.total(func);
+            System.out.printf("R$ %.2f\n", total);
+        }
 
 
-   //#endregion
+    //#endregion
 
     public static void main(String[] args) throws Exception {
         pedidos = new BaseDados<>(1000);
@@ -681,47 +695,16 @@ public class App {
                 } 
                     System.out.println("Não há pedidos registrados");    
                 }
-                    case 5 -> {
-                        relatorioEscolhidoCliente();
-                        // int opcao;
-                        // do{
-                        //     System.out.println(menuRelatorios());
-                        //     opcao = InputUtils.lerInt("Escolha: ");
-                        // switch(opcao){
-
-
-                    //         case 1 -> {
-                    //             System.out.println("\n --- Exibindo relatório de um pedido ---");
-                    //             if(todosOsPedidos.size() > 0){
-                    //                 idPedidoAtual = InputUtils.lerInt("Digite o ID do pedido: ");
-                    //                 System.out.println(relatorioPedido(idPedidoAtual));
-                    //                 continue;
-                    //             }
-                    //             System.out.println("Não há pedidos registrados");
-                    //         }
-
-                    //         case 2 -> System.out.print(relatorioTodosOsPedidos());
-                    //         case 3 -> {
-                    //             int id = InputUtils.lerInt("Insira o id: ");
-                    //             Cliente c = localizarCliente(id);
-                    //             if(c == null){
-                    //                 System.out.println("Cliente não encontrado");
-                    //                 continue;
-                    //             }
-                    //             System.out.println(c.toString());
-                    // }
-                    //         case 4 -> System.out.print(relatorioClientesPorID());
-                    //         case 5 -> System.out.print(relatorioClientesPorGastoCrescente());
-                    //         case 6 -> System.out.print(relatorioNomesClientesPorID() + "\n");
-                    //         case 7 -> System.out.print(relatorioNomesClientesPorGasto() + "\n");
-                            // case 8 ->  ordem alfabetica
-                            // case 9 ->  ordem fidelidade
-                            
-                        //}
-                        // } while(opcao != 0);
-                    
+                    case 5 -> relatorioEscolhidoCliente();
+                    case 6 -> relatorioOrdenado(clientes, Cliente::compareTo); // gasto (ordem crescente) mesmo que 5.2
+                    case 7 -> relatorioOrdenado(pedidos, Pedido::compareTo); // pedido id
+                    case 8 -> {
+                        double valor = InputUtils.lerDouble("Digite um valor para filtrar: R$ ");
+                        Predicate<Cliente> filter = c -> c.totalGastoCliente() >= valor;
+                        System.out.println(clientes.filterReport(filter));
+                        // clientes.filterReport(null)
                     }
-            
+                    case 9 -> totalGastoPorClientes();
                 }
                 
             } catch (NullPointerException npe){

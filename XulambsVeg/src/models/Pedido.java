@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 
-public abstract class Pedido {
+public abstract class Pedido implements Comparable<Pedido> {
     private static int ultimoPedido;
     protected LinkedList<IComida> comidas = new LinkedList<>();
     private LocalDate data;
@@ -178,4 +178,10 @@ public abstract class Pedido {
 
         return idPedido == outro.idPedido;
     }
+
+    @Override
+    public int compareTo(Pedido outro){
+        return idPedido - outro.idPedido;
+    }
+
 }
